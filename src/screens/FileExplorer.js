@@ -1,11 +1,12 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import * as FileSystem from 'expo-file-system';
+import {Directory, File, Paths} from 'expo-file-system';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import FileItem from '../components/FileItem';
 import { ensureAppDirectory, getFilesInDirectory } from '../utils/fileUtils';
 
-const APP_DIR = FileSystem.documentDirectory + 'transfile/';
+const APP_DIR_NAME = 'transfile'
+const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
 
 export default function FileExplorer({ navigation }) {
   const [files, setFiles] = useState([]);
@@ -16,8 +17,8 @@ export default function FileExplorer({ navigation }) {
   const refreshFiles = useCallback(async () => {
     setLoading(true);
     try {
-      await ensureAppDirectory(APP_DIR);
-      const list = await getFilesInDirectory(currentDir);
+      await ensureAppDirectory(APP_DIR_NAME);
+      const list = await getFilesInDirectory(APP_DIR_NAME);
       setFiles(list);
     } catch (e) {
       console.error('Error reading files', e);
@@ -39,7 +40,8 @@ export default function FileExplorer({ navigation }) {
         style: 'destructive',
         onPress: async () => {
           try {
-            await FileSystem.deleteAsync(fileUri);
+            const file = new File(fileUri)
+            await file.delete();
             refreshFiles();
           } catch (e) {
             console.error(e);
@@ -60,9 +62,10 @@ export default function FileExplorer({ navigation }) {
           text: 'OK',
           onPress: async (newName) => {
             if (!newName) return;
-            const newPath = currentDir + newName;
             try {
-              await FileSystem.moveAsync({ from: fileUri, to: newPath });
+              const file = new File(fileUri);
+              const newPath = new Directory(Paths.document, APP_DIR_NAME).uri + newName;
+              await file.move(newPath);
               refreshFiles();
             } catch (e) {
               console.error(e);
@@ -85,7 +88,8 @@ export default function FileExplorer({ navigation }) {
           if (!name) return;
           const path = currentDir + name + '/';
           try {
-            await FileSystem.makeDirectoryAsync(path, { intermediates: true });
+            const dir = new Directory(Paths.document, `${APP_DIR_NAME}/${name}`)
+            await dir.create();
             refreshFiles();
           } catch (e) {
             console.error(e);

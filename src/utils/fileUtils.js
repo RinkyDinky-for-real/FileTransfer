@@ -1,10 +1,12 @@
-import * as FileSystem from 'expo-file-system';
+import {Directory, Paths} from 'expo-file-system';
 
 export async function ensureAppDirectory(path) {
   try {
-    const info = await FileSystem.getInfoAsync(path);
-    if (!info.exists) {
-      await FileSystem.makeDirectoryAsync(path, { intermediates: true });
+
+    const dir = new Directory(Paths.document, path);
+
+    if (!dir.exists) {
+      await dir.create();
     }
   } catch (e) {
     console.error('ensureAppDirectory error', e);
@@ -12,19 +14,21 @@ export async function ensureAppDirectory(path) {
   }
 }
 
-export async function getFilesInDirectory(dir) {
+export async function getFilesInDirectory(path) {
   try {
-    const res = await FileSystem.readDirectoryAsync(dir);
+    const dir = new Directory(Paths.document, path);
+
+    const entries = await dir.list();
+
     const detailed = await Promise.all(
-      res.map(async (name) => {
-        const uri = dir + name;
-        const info = await FileSystem.getInfoAsync(uri, { size: true });
+      entries.map(async (entry) => {
+        const info = await entry.info();
         return {
-          name,
-          uri,
-          isDirectory: info.isDirectory,
-          size: info.size || 0,
-          modificationTime: info.modificationTime || 0,
+          name: entry.name,
+          uri: entry.uri,
+          isDirectory: entry instanceof Directory,
+          size: info.size ?? 0,
+          modificationTime: info.modificationTime ?? 0,
         };
       })
     );
