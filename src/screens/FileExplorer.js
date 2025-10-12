@@ -64,8 +64,10 @@ export default function FileExplorer({ navigation }) {
             if (!newName) return;
             try {
               const file = new File(fileUri);
-              const newPath = new Directory(Paths.document, APP_DIR_NAME).uri + newName;
-              await file.move(newPath);
+              const newPath = new Directory(Paths.document, APP_DIR_NAME);
+              const newFile = new File(newPath, newName);
+
+              await file.move(newFile);
               refreshFiles();
             } catch (e) {
               console.error(e);
@@ -86,7 +88,6 @@ export default function FileExplorer({ navigation }) {
         text: 'Opprett',
         onPress: async (name) => {
           if (!name) return;
-          const path = currentDir + name + '/';
           try {
             const dir = new Directory(Paths.document, `${APP_DIR_NAME}/${name}`)
             await dir.create();
