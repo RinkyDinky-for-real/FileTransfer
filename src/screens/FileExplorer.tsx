@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ActivityIndicator, FlatList, Alert } from "react-native";
+import { View, ActivityIndicator, FlatList } from "react-native";
 import FileItem from "../components/FileItem";
 import ExplorerHeader from "../components/ExplorerHeader";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
@@ -19,7 +19,9 @@ export default function FileExplorer() {
     refreshFiles,
     onDelete,
     onRename,
+    onOpen,
     createFolder,
+    onGoUp,
   } = useFileExplorer();
 
   if (!currentDir) {
@@ -40,6 +42,8 @@ export default function FileExplorer() {
       />
       <CurrentDirectoryPath
         path={`${APP_DIR_NAME}/${currentDir.uri.replace(APP_DIR.uri, "")}`}
+        canGoUp={currentDir.uri !== APP_DIR.uri}
+        onGoUp={onGoUp}
       />
       <View style={{ flex: 1 }}>
         {loading ? (
@@ -53,12 +57,7 @@ export default function FileExplorer() {
                 file={item}
                 onDelete={() => onDelete(item.uri)}
                 onRename={() => onRename(item.uri, item.name)}
-                onOpen={() =>
-                  Alert.alert(
-                    "Åpne",
-                    "Åpne-funksjon ikke implementert i alpha."
-                  )
-                }
+                onOpen={() => onOpen(item.uri)}
               />
             )}
           />
@@ -67,4 +66,3 @@ export default function FileExplorer() {
     </View>
   );
 }
- 

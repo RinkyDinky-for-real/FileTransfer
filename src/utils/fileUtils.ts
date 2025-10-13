@@ -48,6 +48,12 @@ function normalizeUri(uri: string) {
   return decodeURI(uri).replace(/\/$/, "").toLowerCase();
 }
 
+export async function truncateName(name: string, maxChar: number = 12) {
+  return name.length > maxChar
+    ? name.slice(0, 5) + "..." + name.slice(-5)
+    : name;
+}
+
 export async function getUniqueName(
   item: File | Directory,
   baseName: string,

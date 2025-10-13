@@ -1,31 +1,57 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { truncateName } from "../utils/fileUtils";
 
 type CurrentDirectoryPathProps = {
   path: string;
+  canGoUp?: boolean;
+  onGoUp?: () => void;
 };
 
 export default function CurrentDirectoryPath({
   path,
+  canGoUp = false,
+  onGoUp,
 }: CurrentDirectoryPathProps) {
+  const MAX_SEGMENTS = 3;
+
   const segments = path.split("/").filter(Boolean);
   const lastIndex = segments.length - 1;
+
+  let displaySegments = [...segments];
+  if (segments.length > MAX_SEGMENTS) {
+    displaySegments = ["...", ...segments.slice(-MAX_SEGMENTS)];
+  }
+
   return (
-    <View style={{ paddingBottom: 4, paddingLeft: 4 }}>
+    <View style={{ flexDirection: "row", paddingBottom: 4, paddingLeft: 4 }}>
+      {canGoUp && (
+        <TouchableOpacity
+          onPress={onGoUp}
+          style={{
+            marginRight: 4,
+            paddingLeft: 2,
+          }}
+          hitSlop={10}
+        >
+          <MaterialIcons name="arrow-upward" size={16} color={"#333"} />
+        </TouchableOpacity>
+      )}
       <Text
         numberOfLines={1}
         ellipsizeMode="middle"
         style={{ fontSize: 12, color: "#333" }}
       >
-        {segments.map((segment, index) => (
+        {displaySegments.map((segment, index) => (
           <Text
             key={index}
             style={{
               fontWeight: index === lastIndex ? "700" : "400",
             }}
           >
-            {segment}
-            {index < lastIndex && "/"}
+            {truncateName(segment)}
+            {index < displaySegments.length - 1 && "/"}
           </Text>
         ))}
       </Text>
