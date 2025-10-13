@@ -9,7 +9,6 @@ import {
 } from "./fileUtils";
 
 const APP_DIR_NAME = "Core/Files";
-console.log(APP_DIR_NAME);
 
 export function useFileExplorer() {
   const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
@@ -40,7 +39,7 @@ export function useFileExplorer() {
       setFiles(list);
     } catch (e) {
       console.error("Error reading files", e);
-      Alert.alert("Feil", "Kunne ikke lese filer.");
+      Alert.alert("Error", "Could not read files.");
     } finally {
       setLoading(false);
     }
@@ -51,10 +50,10 @@ export function useFileExplorer() {
   }, [refreshFiles]);
 
   const onDelete = async (fileUri: string) => {
-    Alert.alert("Slett fil", "Er du sikker?", [
-      { text: "Avbryt", style: "cancel" },
+    Alert.alert("Delete file", "Are you sure?", [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "Slett",
+        text: "Delete",
         style: "destructive",
         onPress: async () => {
           try {
@@ -63,7 +62,7 @@ export function useFileExplorer() {
             refreshFiles();
           } catch (e) {
             console.error(e);
-            Alert.alert("Feil", "Kunne ikke slette fil.");
+            Alert.alert("Error", "Could not delete file.");
           }
         },
       },
@@ -71,10 +70,10 @@ export function useFileExplorer() {
   };
   const onRename = async (fileUri: string, oldName: string) => {
     Alert.prompt(
-      "Gi nytt navn",
-      "Skriv nytt navn for filen (inkl. filendelse):",
+      "Rename file",
+      "Type a new filename (incl. extension):",
       [
-        { text: "Avbryt", style: "cancel" },
+        { text: "Cancel", style: "cancel" },
         {
           text: "OK",
           onPress: async (newName?: string) => {
@@ -90,7 +89,7 @@ export function useFileExplorer() {
               refreshFiles();
             } catch (e) {
               console.error(e);
-              Alert.alert("Feil", "Kunne ikke gi nytt navn.");
+              Alert.alert("Error", "Could not rename file.");
             }
           },
         },
@@ -100,10 +99,10 @@ export function useFileExplorer() {
     );
   };
   const createFolder = async () => {
-    Alert.prompt("Ny mappe", "Navn pÃ¥ mappe:", [
-      { text: "Avbryt", style: "cancel" },
+    Alert.prompt("New folder", "Name of folder:", [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "Opprett",
+        text: "Create",
         onPress: async (name?: string) => {
           if (!name) return;
           try {
@@ -116,7 +115,7 @@ export function useFileExplorer() {
             refreshFiles();
           } catch (e) {
             console.error(e);
-            Alert.alert("Feil", "Kunne ikke opprette mappe.");
+            Alert.alert("Error", "Could not create folder.");
           }
         },
       },

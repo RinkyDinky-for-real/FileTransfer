@@ -10,11 +10,7 @@ export type FileSystemEntry = {
 
 export async function ensureAppDirectory(path: string) {
   try {
-    console.log(path);
-    console.log(Paths.document);
     const dir = new Directory(Paths.document, path);
-    console.log(dir.uri);
-    console.log(dir.exists);
     if (!dir.exists) {
       await dir.create({ intermediates: true });
     }
@@ -86,4 +82,3 @@ export async function getUniqueName(
 
   return newName;
 }
- 

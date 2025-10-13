@@ -21,7 +21,7 @@ export default function ExplorerHeader({
         style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}
       >
         <Text style={{ fontSize: 18, fontWeight: "600", flex: 1 }}>
-          Filoversikt
+          File Overview
         </Text>
         <TouchableOpacity onPress={onCreateFolder} style={{ padding: 6 }}>
           <MaterialIcons name="create-new-folder" size={24} />
@@ -32,7 +32,7 @@ export default function ExplorerHeader({
       </View>
 
       <TextInput
-        placeholder="Søk filer..."
+        placeholder="Search files..."
         value={query}
         onChangeText={setQuery}
         style={{
