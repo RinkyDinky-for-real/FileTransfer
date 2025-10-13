@@ -22,6 +22,14 @@ export default function FileExplorer() {
     createFolder,
   } = useFileExplorer();
 
+  if (!currentDir) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1, padding: 12 }}>
       <ExplorerHeader
@@ -59,3 +67,4 @@ export default function FileExplorer() {
     </View>
   );
 }
+ 

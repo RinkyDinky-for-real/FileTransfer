@@ -8,16 +8,31 @@ import {
   getUniqueName,
 } from "./fileUtils";
 
-const APP_DIR_NAME = "Core/Documents";
-const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
+const APP_DIR_NAME = "Core/Files";
+console.log(APP_DIR_NAME);
 
 export function useFileExplorer() {
+  const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
   const [files, setFiles] = useState<FileSystemEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [query, setQuery] = useState<string>("");
-  const [currentDir, setCurrentDir] = useState(APP_DIR);
+  const [currentDir, setCurrentDir] = useState<Directory | null>(null);
+
+  useEffect(() => {
+    async function setup() {
+      try {
+        await ensureAppDirectory(APP_DIR_NAME);
+        const dir = new Directory(Paths.document, APP_DIR_NAME);
+        setCurrentDir(dir);
+      } catch (e) {
+        console.error("Failed to set up app directory", e);
+      }
+    }
+    setup();
+  }, []);
 
   const refreshFiles = useCallback(async () => {
+    if (!currentDir) return;
     setLoading(true);
     try {
       await ensureAppDirectory(APP_DIR_NAME);
@@ -85,7 +100,7 @@ export function useFileExplorer() {
     );
   };
   const createFolder = async () => {
-    Alert.prompt("Ny mappe", "Navn på mappe:", [
+    Alert.prompt("Ny mappe", "Navn pÃ¥ mappe:", [
       { text: "Avbryt", style: "cancel" },
       {
         text: "Opprett",
