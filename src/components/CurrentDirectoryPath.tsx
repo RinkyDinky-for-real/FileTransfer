@@ -17,12 +17,12 @@ export default function CurrentDirectoryPath({
   const MAX_SEGMENTS = 3;
 
   const segments = path.split("/").filter(Boolean);
-  const lastIndex = segments.length - 1;
 
   let displaySegments = [...segments];
   if (segments.length > MAX_SEGMENTS) {
     displaySegments = ["...", ...segments.slice(-MAX_SEGMENTS)];
   }
+  const lastIndex = displaySegments.length - 1;
 
   return (
     <View style={{ flexDirection: "row", paddingBottom: 4, paddingLeft: 4 }}>
@@ -51,7 +51,7 @@ export default function CurrentDirectoryPath({
             }}
           >
             {truncateName(segment)}
-            {index < displaySegments.length - 1 && "/"}
+            {index < lastIndex && "/"}
           </Text>
         ))}
       </Text>
