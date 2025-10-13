@@ -8,19 +8,20 @@ import {
   getUniqueName,
 } from "./fileUtils";
 
-const APP_DIR_NAME = "transfile";
+const APP_DIR_NAME = "Core/Documents";
 const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
 
 export function useFileExplorer() {
   const [files, setFiles] = useState<FileSystemEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [query, setQuery] = useState<string>("");
+  const [currentDir, setCurrentDir] = useState(APP_DIR);
 
   const refreshFiles = useCallback(async () => {
     setLoading(true);
     try {
       await ensureAppDirectory(APP_DIR_NAME);
-      const list = await getFilesInDirectory(APP_DIR);
+      const list = await getFilesInDirectory(currentDir);
       setFiles(list);
     } catch (e) {
       console.error("Error reading files", e);
@@ -28,7 +29,7 @@ export function useFileExplorer() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentDir]);
 
   useEffect(() => {
     refreshFiles();
@@ -116,6 +117,9 @@ export function useFileExplorer() {
     loading,
     query,
     setQuery,
+    currentDir,
+    APP_DIR_NAME,
+    APP_DIR,
     refreshFiles,
     onDelete,
     onRename,
