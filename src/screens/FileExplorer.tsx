@@ -1,12 +1,13 @@
-import React from 'react';
-import { View, ActivityIndicator, FlatList } from 'react-native';
-import FileItem from '../components/FileItem';
-import ExplorerHeader from '../components/ExplorerHeader';
-import CurrentDirectoryPath from '../components/CurrentDirectoryPath';
-import AddFolderPrompt from '../components/AddFolderPrompt';
-import RenamePrompt from '../components/RenamePrompt';
-import { useFileExplorer } from '../utils/explorerHooks';
-import type { FileSystemEntry } from '../utils/fileUtils';
+import React from "react";
+import { View, ActivityIndicator, FlatList } from "react-native";
+import FileItem from "../components/FileItem";
+import ExplorerHeader from "../components/ExplorerHeader";
+import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
+import AddFolderPrompt from "../components/AddFolderPrompt";
+import RenamePrompt from "../components/RenamePrompt";
+import DeletePrompt from "../components/DeletePrompt";
+import { useFileExplorer } from "../utils/explorerHooks";
+import type { FileSystemEntry } from "../utils/fileUtils";
 
 export default function FileExplorer() {
   const {
@@ -18,23 +19,27 @@ export default function FileExplorer() {
     query,
     setQuery,
     refreshFiles,
-    onDelete,
-    onRename, 
+    showDeletePrompt,
+    showRenamePrompt,
     onOpen,
-    createFolder, 
     onGoUp,
-    addPromptVisible,
+
+    addFolderPromptVisible,
+    setAddFolderPromptVisible,
     handleCreateFolderSubmit,
-    handleCreateFolderCancel,
     renamePromptVisible,
-    renameOldName,
     handleRenameSubmit,
     setRenamePromptVisible,
+    deletePromptVisible,
+    handleDeleteSubmit,
+    setDeletePromptVisible,
+
+    currentFileName,
   } = useFileExplorer();
 
   if (!currentDir.exists) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -46,11 +51,11 @@ export default function FileExplorer() {
         query={query}
         setQuery={setQuery}
         onRefresh={refreshFiles}
-        onCreateFolder={createFolder}
+        onCreate={() => setAddFolderPromptVisible(true)}
       />
       <View style={{ flex: 1 }}>
         <CurrentDirectoryPath
-          path={`${APP_DIR_NAME}/${currentDir.uri.replace(APP_DIR.uri, '')}`}
+          path={`${APP_DIR_NAME}/${currentDir.uri.replace(APP_DIR.uri, "")}`}
           canGoUp={currentDir.uri !== APP_DIR.uri}
           onGoUp={onGoUp}
         />
@@ -64,8 +69,8 @@ export default function FileExplorer() {
               renderItem={({ item }) => (
                 <FileItem
                   file={item}
-                  onDelete={() => onDelete(item.uri)}
-                  onRename={() => onRename(item.uri, item.name)} 
+                  onDelete={() => showDeletePrompt(item.uri)}
+                  onRename={() => showRenamePrompt(item.uri, item.name)}
                   onOpen={() => onOpen(item.uri)}
                 />
               )}
@@ -75,16 +80,22 @@ export default function FileExplorer() {
       </View>
 
       <AddFolderPrompt
-        visible={addPromptVisible}
-        onCancel={handleCreateFolderCancel}
+        visible={addFolderPromptVisible}
+        onCancel={() => setAddFolderPromptVisible(false)}
         onSubmit={handleCreateFolderSubmit}
       />
 
       <RenamePrompt
         visible={renamePromptVisible}
-        oldName={renameOldName}
+        oldName={currentFileName}
         onCancel={() => setRenamePromptVisible(false)}
         onSubmit={handleRenameSubmit}
+      />
+
+      <DeletePrompt
+        visible={deletePromptVisible}
+        onCancel={() => setDeletePromptVisible(false)}
+        onSubmit={handleDeleteSubmit}
       />
     </View>
   );

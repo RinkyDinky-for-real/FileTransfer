@@ -1,45 +1,34 @@
-import React, { useState } from "react";
-import { View, Modal, TextInput, Button, StyleSheet, Text } from "react-native";
+import React from "react";
+import { View, Modal, Button, StyleSheet, Text } from "react-native";
 
-interface AddFolderPromptProps {
+interface DeletePromptProps {
   visible: boolean;
   onCancel: () => void;
-  onSubmit: (name: string) => void;
+  onSubmit: () => void;
 }
 
-export default function AddfolderPrompt({
+export default function DeletePrompt({
   visible,
   onCancel,
   onSubmit,
-}: AddFolderPromptProps) {
-  const [inputValue, setInputValue] = useState("");
-
+}: DeletePromptProps) {
   const handlePressSubmit = () => {
-    console.log("test");
-    onSubmit(inputValue);
-    setInputValue("");
+    onSubmit();
   };
 
   const handlePressCancel = () => {
     onCancel();
-    setInputValue("");
   };
 
   return (
     <Modal transparent visible={visible} onRequestClose={handlePressCancel}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>New folder</Text>
-          <Text style={styles.modalMessage}>Name of folder:</Text>
-          <TextInput
-            style={styles.modalInput}
-            onChangeText={setInputValue}
-            value={inputValue}
-            placeholder="Folder name"
-          />
+          <Text style={styles.modalTitle}>Delete</Text>
+          <Text style={styles.modalMessage}>Are you sure?</Text>
           <View style={styles.modalButtonContainer}>
             <Button title="Cancel" onPress={handlePressCancel} color="#888" />
-            <Button title="Create" onPress={handlePressSubmit} />
+            <Button title="Delete" onPress={handlePressSubmit} />
           </View>
         </View>
       </View>

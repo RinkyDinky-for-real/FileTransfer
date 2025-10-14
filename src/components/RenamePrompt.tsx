@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Modal, TextInput, Button, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, Modal, TextInput, Button, StyleSheet, Text } from "react-native";
 
 interface RenamePromptProps {
   visible: boolean;
@@ -8,7 +8,12 @@ interface RenamePromptProps {
   onSubmit: (newName: string) => void;
 }
 
-const RenamePrompt = ({ visible, oldName, onCancel, onSubmit }: RenamePromptProps) => {
+export default function RenamePrompt({
+  visible,
+  oldName,
+  onCancel,
+  onSubmit,
+}: RenamePromptProps) {
   const [inputValue, setInputValue] = useState(oldName);
 
   useEffect(() => {
@@ -19,12 +24,12 @@ const RenamePrompt = ({ visible, oldName, onCancel, onSubmit }: RenamePromptProp
 
   const handlePressSubmit = () => {
     onSubmit(inputValue);
-    setInputValue('');
+    setInputValue("");
   };
 
   const handlePressCancel = () => {
     onCancel();
-    setInputValue('');
+    setInputValue("");
   };
 
   return (
@@ -47,24 +52,24 @@ const RenamePrompt = ({ visible, oldName, onCancel, onSubmit }: RenamePromptProp
       </View>
     </Modal>
   );
-};
+}
 
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: "80%",
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   modalMessage: {
@@ -72,15 +77,13 @@ const styles = StyleSheet.create({
   },
   modalInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
     marginBottom: 20,
   },
   modalButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
 });
-
-export default RenamePrompt;

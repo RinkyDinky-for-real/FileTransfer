@@ -19,8 +19,10 @@ export function useFileExplorer() {
 
   const [addFolderPromptVisible, setAddFolderPromptVisible] = useState(false);
   const [renamePromptVisible, setRenamePromptVisible] = useState(false);
-  const [renameFileUri, setRenameFileUri] = useState<string | null>(null);
-  const [renameOldName, setRenameOldName] = useState<string>("");
+  const [deletePromptVisible, setDeletePromptVisible] = useState(false);
+
+  const [currentFileName, setCurrentFileName] = useState("");
+  const [targetUri, setTargetUri] = useState<string | null>(null);
 
   useEffect(() => {
     async function setup() {
@@ -55,36 +57,34 @@ export function useFileExplorer() {
     refreshFiles();
   }, [refreshFiles]);
 
-  const onDelete = async (fileUri: string) => {
-    Alert.alert("Delete file", "Are you sure?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            const file = new File(fileUri);
-            file.delete();
-            await refreshFiles();
-          } catch (e) {
-            console.error("Error deleting file", e);
-            Alert.alert("Error", "Could not delete file.");
-          }
-        },
-      },
-    ]);
+  const showDeletePrompt = (fileUri: string) => {
+    setTargetUri(fileUri);
+    setDeletePromptVisible(true);
+  };
+
+  const handleDeleteSubmit = async () => {
+    if (!targetUri) return;
+    try {
+      const file = new File(targetUri);
+      file.delete();
+      await refreshFiles();
+    } catch (e) {
+      console.error("Error deleting file", e);
+      Alert.alert("Error", "Could not delete file.");
+    }
+    setDeletePromptVisible(false);
   };
 
   const showRenamePrompt = (fileUri: string, oldName: string) => {
-    setRenameFileUri(fileUri);
-    setRenameOldName(oldName);
+    setTargetUri(fileUri);
+    setCurrentFileName(oldName);
     setRenamePromptVisible(true);
   };
 
   const handleRenameSubmit = async (newName: string) => {
-    if (!newName || renameOldName === newName || !renameFileUri) return;
+    if (!newName || currentFileName === newName || !targetUri) return;
     try {
-      const file = new File(renameFileUri);
+      const file = new File(targetUri);
       const uniqueName = await getUniqueName(file, newName);
       file.rename(uniqueName);
       await refreshFiles();
@@ -109,10 +109,6 @@ export function useFileExplorer() {
     }
   };
 
-  const showCreateFolderPrompt = () => {
-    setAddFolderPromptVisible(true);
-  };
-
   const handleCreateFolderSubmit = async (name: string) => {
     if (!name) return;
     try {
@@ -124,10 +120,6 @@ export function useFileExplorer() {
       console.error(e);
       Alert.alert("Error", "Could not create folder.");
     }
-    setAddFolderPromptVisible(false);
-  };
-
-  const handleCreateFolderCancel = () => {
     setAddFolderPromptVisible(false);
   };
 
@@ -151,18 +143,21 @@ export function useFileExplorer() {
     query,
     setQuery,
     refreshFiles,
-    onDelete,
-    onRename: showRenamePrompt,
+    showDeletePrompt,
+    showRenamePrompt,
     onOpen,
-    createFolder: showCreateFolderPrompt,
     onGoUp,
-    addPromptVisible: addFolderPromptVisible,
+
+    addFolderPromptVisible,
+    setAddFolderPromptVisible,
     handleCreateFolderSubmit,
-    handleCreateFolderCancel,
     renamePromptVisible,
-    renameFileUri,
-    renameOldName,
     handleRenameSubmit,
     setRenamePromptVisible,
+    deletePromptVisible,
+    handleDeleteSubmit,
+    setDeletePromptVisible,
+
+    currentFileName,
   };
 }

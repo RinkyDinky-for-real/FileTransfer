@@ -6,14 +6,14 @@ type ExplorerHeaderProps = {
   query: string;
   setQuery: (value: string) => void;
   onRefresh: () => void;
-  onCreateFolder: () => void;
+  onCreate: () => void;
 };
 
 export default function ExplorerHeader({
   query,
   setQuery,
   onRefresh,
-  onCreateFolder,
+  onCreate,
 }: ExplorerHeaderProps) {
   return (
     <View style={{ marginBottom: 12 }}>
@@ -24,7 +24,7 @@ export default function ExplorerHeader({
           File Overview
         </Text>
         <Pressable
-          onPress={onCreateFolder}
+          onPress={onCreate}
           style={({ pressed }) => ({
             padding: 6,
             opacity: pressed ? 0.4 : 1,
