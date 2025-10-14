@@ -32,6 +32,7 @@ export function useFileExplorer() {
 
   const refreshFiles = useCallback(async () => {
     setLoading(true);
+    console.log("Loading started")
     try {
       await ensureAppDirectory(APP_DIR_NAME);
       const list = await getFilesInDirectory(currentDir);
@@ -41,6 +42,7 @@ export function useFileExplorer() {
       Alert.alert("Feil", "Kunne ikke lese filer.");
     } finally {
       setLoading(false);
+      console.log("Loading finished")
     }
   }, [currentDir]);
 
@@ -109,6 +111,7 @@ export function useFileExplorer() {
     }
   };
   const createFolder = useCallback(async () => {
+    console.log("Creating folder...")
     Alert.prompt("New folder", "Name of folder:", [
       { text: "Cancel", style: "cancel" },
       {
@@ -127,6 +130,7 @@ export function useFileExplorer() {
         },
       },
     ]);
+    console.log("Created new folder.")
   }, [refreshFiles, currentDir]);
 
   const onGoUp = useCallback(async () => {
