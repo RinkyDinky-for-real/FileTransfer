@@ -11,8 +11,11 @@ export type FileSystemEntry = {
 export async function ensureAppDirectory(path: string) {
   try {
     const dir = new Directory(Paths.document, path);
+    console.log("Checking for dir.") 
     if (!dir.exists) {
+      console.log("Dir not exist, creating dir...")
       dir.create({ intermediates: true });
+      console.log("Dir was created.")
     }
   } catch (e) {
     console.error("ensureAppDirectory error", e);
