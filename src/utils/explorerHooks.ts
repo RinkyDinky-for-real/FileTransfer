@@ -81,16 +81,11 @@ export function useFileExplorer() {
 
   const handleRenameSubmit = async (newName: string) => {
     if (newName && currentFileName !== newName && targetUri) {
+      const file = new Directory(currentDir, currentFileName);
       try {
-        const file = new File(targetUri);
-        const uniqueName = await getUniqueName(file, newName);
-
+        const uniqueName: string = await getUniqueName(file, newName);
         if (uniqueName !== file.name) {
-          const destination = new File(currentDir, uniqueName);
-
-          // This function works on iOS, but has some issues with Android,
-          // must look into it at a later date
-          file.move(destination);
+          file.rename(uniqueName);
           await refreshFiles();
         }
       } catch (e) {
