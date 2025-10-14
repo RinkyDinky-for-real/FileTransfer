@@ -17,7 +17,7 @@ export function useFileExplorer() {
   const [query, setQuery] = useState<string>("");
   const [currentDir, setCurrentDir] = useState<Directory>(APP_DIR);
 
-  const [addPromptVisible, setAddPromptVisible] = useState(false);
+  const [addFolderPromptVisible, setAddFolderPromptVisible] = useState(false);
   const [renamePromptVisible, setRenamePromptVisible] = useState(false);
   const [renameFileUri, setRenameFileUri] = useState<string | null>(null);
   const [renameOldName, setRenameOldName] = useState<string>("");
@@ -110,7 +110,7 @@ export function useFileExplorer() {
   };
 
   const showCreateFolderPrompt = () => {
-    setAddPromptVisible(true);
+    setAddFolderPromptVisible(true);
   };
 
   const handleCreateFolderSubmit = async (name: string) => {
@@ -124,11 +124,11 @@ export function useFileExplorer() {
       console.error(e);
       Alert.alert("Error", "Could not create folder.");
     }
-    setAddPromptVisible(false);
+    setAddFolderPromptVisible(false);
   };
 
   const handleCreateFolderCancel = () => {
-    setAddPromptVisible(false);
+    setAddFolderPromptVisible(false);
   };
 
   const onGoUp = useCallback(async () => {
@@ -156,7 +156,7 @@ export function useFileExplorer() {
     onOpen,
     createFolder: showCreateFolderPrompt,
     onGoUp,
-    addPromptVisible,
+    addPromptVisible: addFolderPromptVisible,
     handleCreateFolderSubmit,
     handleCreateFolderCancel,
     renamePromptVisible,
