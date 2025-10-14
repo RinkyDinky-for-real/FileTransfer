@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { truncateName } from "../utils/fileUtils";
 
@@ -27,16 +27,17 @@ export default function CurrentDirectoryPath({
   return (
     <View style={{ flexDirection: "row", paddingBottom: 4, paddingLeft: 4 }}>
       {canGoUp && (
-        <TouchableOpacity
+        <Pressable
           onPress={onGoUp}
-          style={{
+          style={({ pressed }) => ({
             marginRight: 4,
             paddingLeft: 2,
-          }}
+            opacity: pressed ? 0.4 : 1,
+          })}
           hitSlop={10}
         >
           <MaterialIcons name="arrow-upward" size={16} color={"#333"} />
-        </TouchableOpacity>
+        </Pressable>
       )}
       <Text
         numberOfLines={1}

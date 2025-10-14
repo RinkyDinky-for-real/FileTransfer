@@ -8,14 +8,13 @@ import type { FileSystemEntry } from "../utils/fileUtils";
 
 export default function FileExplorer() {
   const {
-    files,
+    filteredFiles,
     loading,
-    query,
-    setQuery,
     currentDir,
     APP_DIR_NAME,
     APP_DIR,
-    filteredFiles,
+    query,
+    setQuery,
     refreshFiles,
     onDelete,
     onRename,
@@ -24,7 +23,7 @@ export default function FileExplorer() {
     onGoUp,
   } = useFileExplorer();
 
-  if (!currentDir) {
+  if (!currentDir.exists) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" />
@@ -40,28 +39,30 @@ export default function FileExplorer() {
         onRefresh={refreshFiles}
         onCreateFolder={createFolder}
       />
-      <CurrentDirectoryPath
-        path={`${APP_DIR_NAME}/${currentDir.uri.replace(APP_DIR.uri, "")}`}
-        canGoUp={currentDir.uri !== APP_DIR.uri}
-        onGoUp={onGoUp}
-      />
       <View style={{ flex: 1 }}>
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <FlatList<FileSystemEntry>
-            data={filteredFiles}
-            keyExtractor={(item) => item.uri}
-            renderItem={({ item }) => (
-              <FileItem
-                file={item}
-                onDelete={() => onDelete(item.uri)}
-                onRename={() => onRename(item.uri, item.name)}
-                onOpen={() => onOpen(item.uri)}
-              />
-            )}
-          />
-        )}
+        <CurrentDirectoryPath
+          path={`${APP_DIR_NAME}/${currentDir.uri.replace(APP_DIR.uri, "")}`}
+          canGoUp={currentDir.uri !== APP_DIR.uri}
+          onGoUp={onGoUp}
+        />
+        <View style={{ flex: 1 }}>
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            <FlatList<FileSystemEntry>
+              data={filteredFiles}
+              keyExtractor={(item) => item.uri}
+              renderItem={({ item }) => (
+                <FileItem
+                  file={item}
+                  onDelete={() => onDelete(item.uri)}
+                  onRename={() => onRename(item.uri, item.name)}
+                  onOpen={() => onOpen(item.uri)}
+                />
+              )}
+            />
+          )}
+        </View>
       </View>
     </View>
   );

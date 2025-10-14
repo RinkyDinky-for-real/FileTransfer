@@ -15,7 +15,7 @@ export function useFileExplorer() {
   const [files, setFiles] = useState<FileSystemEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [query, setQuery] = useState<string>("");
-  const [currentDir, setCurrentDir] = useState<Directory | null>(null);
+  const [currentDir, setCurrentDir] = useState<Directory>(APP_DIR);
 
   useEffect(() => {
     async function setup() {
@@ -30,28 +30,23 @@ export function useFileExplorer() {
     setup();
   }, []);
 
-  const refreshFiles = useCallback(
-    async (dir?: Directory) => {
-      const targetDir = dir ?? currentDir;
-      if (!targetDir) return;
-      setLoading(true);
-      try {
-        await ensureAppDirectory(APP_DIR_NAME);
-        const list = await getFilesInDirectory(targetDir);
-        setFiles(list);
-      } catch (e) {
-        console.error("Error reading files", e);
-        Alert.alert("Error", "Could not read files.");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [currentDir]
-  );
+  const refreshFiles = useCallback(async () => {
+    setLoading(true);
+    try {
+      await ensureAppDirectory(APP_DIR_NAME);
+      const list = await getFilesInDirectory(currentDir);
+      setFiles(list);
+    } catch (e) {
+      console.error("Error reading files", e);
+      Alert.alert("Feil", "Kunne ikke lese filer.");
+    } finally {
+      setLoading(false);
+    }
+  }, [currentDir]);
 
   useEffect(() => {
-    if (currentDir) refreshFiles(currentDir);
-  }, [currentDir, refreshFiles]);
+    refreshFiles();
+  }, [refreshFiles]);
 
   const onDelete = async (fileUri: string) => {
     Alert.alert("Delete file", "Are you sure?", [
@@ -102,23 +97,24 @@ export function useFileExplorer() {
   const onOpen = async (fileUri: string) => {
     try {
       const { exists, isDirectory } = Paths.info(fileUri);
-      if (!currentDir || !exists || !isDirectory) return;
+      if (!exists || !isDirectory) return;
 
       const newDir = new Directory(fileUri);
       setCurrentDir(newDir);
-      await refreshFiles(newDir);
+      setQuery("");
+      await refreshFiles();
     } catch (e) {
       console.error("Error opening file", e);
       Alert.alert("Error", "Could not open file.");
     }
   };
-  const createFolder = async () => {
+  const createFolder = useCallback(async () => {
     Alert.prompt("New folder", "Name of folder:", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Create",
         onPress: async (name?: string) => {
-          if (!name || !currentDir) return;
+          if (!name) return;
           try {
             const uniqueName = await getUniqueName(currentDir, name, true);
             const dir = new Directory(currentDir, uniqueName);
@@ -131,36 +127,33 @@ export function useFileExplorer() {
         },
       },
     ]);
-  };
+  }, [refreshFiles, currentDir]);
 
-  const onGoUp = async () => {
-    if (!currentDir) return;
-
+  const onGoUp = useCallback(async () => {
     const parentDir = currentDir.parentDirectory;
     if (!parentDir) return;
 
     setCurrentDir(parentDir);
-    await refreshFiles(parentDir);
-  };
+    await refreshFiles();
+  }, [currentDir, refreshFiles]);
 
   const filteredFiles = files.filter((f) =>
     f.name.toLowerCase().includes(query.toLowerCase())
   );
 
   return {
-    files,
+    filteredFiles,
     loading,
-    query,
-    setQuery,
     currentDir,
     APP_DIR_NAME,
     APP_DIR,
+    query,
+    setQuery,
     refreshFiles,
     onDelete,
     onRename,
     onOpen,
     createFolder,
     onGoUp,
-    filteredFiles,
   };
 }

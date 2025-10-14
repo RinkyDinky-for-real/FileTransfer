@@ -12,7 +12,7 @@ export async function ensureAppDirectory(path: string) {
   try {
     const dir = new Directory(Paths.document, path);
     if (!dir.exists) {
-      await dir.create({ intermediates: true });
+      dir.create({ intermediates: true });
     }
   } catch (e) {
     console.error("ensureAppDirectory error", e);
@@ -44,14 +44,14 @@ export async function getFilesInDirectory(dir: Directory) {
   }
 }
 
-function normalizeUri(uri: string) {
-  return decodeURI(uri).replace(/\/$/, "").toLowerCase();
-}
-
 export async function truncateName(name: string, maxChar: number = 12) {
   return name.length > maxChar
     ? name.slice(0, 5) + "..." + name.slice(-5)
     : name;
+}
+
+function normalizeUri(uri: string) {
+  return decodeURI(uri).replace(/\/$/, "").toLowerCase();
 }
 
 export async function getUniqueName(

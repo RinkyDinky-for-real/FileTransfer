@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, Pressable, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 type ExplorerHeaderProps = {
@@ -23,12 +23,24 @@ export default function ExplorerHeader({
         <Text style={{ fontSize: 18, fontWeight: "600", flex: 1 }}>
           File Overview
         </Text>
-        <TouchableOpacity onPress={onCreateFolder} style={{ padding: 6 }}>
+        <Pressable
+          onPress={onCreateFolder}
+          style={({ pressed }) => ({
+            padding: 6,
+            opacity: pressed ? 0.4 : 1,
+          })}
+        >
           <MaterialIcons name="create-new-folder" size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onRefresh} style={{ padding: 6 }}>
+        </Pressable>
+        <Pressable
+          onPress={onRefresh}
+          style={({ pressed }) => ({
+            padding: 6,
+            opacity: pressed ? 0.4 : 1,
+          })}
+        >
           <MaterialIcons name="refresh" size={24} />
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       <TextInput
