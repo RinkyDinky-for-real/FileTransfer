@@ -17,6 +17,11 @@ export function useFileExplorer() {
   const [query, setQuery] = useState<string>("");
   const [currentDir, setCurrentDir] = useState<Directory>(APP_DIR);
 
+  const [addPromptVisible, setAddPromptVisible] = useState(false);
+  const [renamePromptVisible, setRenamePromptVisible] = useState(false);
+  const [renameFileUri, setRenameFileUri] = useState<string | null>(null);
+  const [renameOldName, setRenameOldName] = useState<string>("");
+
   useEffect(() => {
     async function setup() {
       try {
@@ -32,7 +37,7 @@ export function useFileExplorer() {
 
   const refreshFiles = useCallback(async () => {
     setLoading(true);
-    console.log("Loading started")
+    console.log("Loading started");
     try {
       await ensureAppDirectory(APP_DIR_NAME);
       const list = await getFilesInDirectory(currentDir);
@@ -42,7 +47,7 @@ export function useFileExplorer() {
       Alert.alert("Feil", "Kunne ikke lese filer.");
     } finally {
       setLoading(false);
-      console.log("Loading finished")
+      console.log("Loading finished");
     }
   }, [currentDir]);
 
@@ -69,38 +74,31 @@ export function useFileExplorer() {
       },
     ]);
   };
-  const onRename = async (fileUri: string, oldName: string) => {
-    Alert.prompt(
-      "Rename file",
-      "Type a new filename (incl. extension):",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "OK",
-          onPress: async (newName?: string) => {
-            if (!newName || oldName === newName) return;
-            try {
-              const file = new File(fileUri);
-              const uniqueName = await getUniqueName(file, newName);
 
-              file.rename(uniqueName);
-              await refreshFiles();
-            } catch (e) {
-              console.error("Error renaming file", e);
-              Alert.alert("Error", "Could not rename file.");
-            }
-          },
-        },
-      ],
-      "plain-text",
-      oldName
-    );
+  const showRenamePrompt = (fileUri: string, oldName: string) => {
+    setRenameFileUri(fileUri);
+    setRenameOldName(oldName);
+    setRenamePromptVisible(true);
   };
+
+  const handleRenameSubmit = async (newName: string) => {
+    if (!newName || renameOldName === newName || !renameFileUri) return;
+    try {
+      const file = new File(renameFileUri);
+      const uniqueName = await getUniqueName(file, newName);
+      file.rename(uniqueName);
+      await refreshFiles();
+    } catch (e) {
+      console.error("Error renaming file", e);
+      Alert.alert("Error", "Could not rename file.");
+    }
+    setRenamePromptVisible(false);
+  };
+
   const onOpen = async (fileUri: string) => {
     try {
       const { exists, isDirectory } = Paths.info(fileUri);
       if (!exists || !isDirectory) return;
-
       const newDir = new Directory(fileUri);
       setCurrentDir(newDir);
       setQuery("");
@@ -110,33 +108,32 @@ export function useFileExplorer() {
       Alert.alert("Error", "Could not open file.");
     }
   };
-  const createFolder = useCallback(async () => {
-    console.log("Creating folder...")
-    Alert.prompt("New folder", "Name of folder:", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Create",
-        onPress: async (name?: string) => {
-          if (!name) return;
-          try {
-            const uniqueName = await getUniqueName(currentDir, name, true);
-            const dir = new Directory(currentDir, uniqueName);
-            dir.create();
-            await refreshFiles();
-          } catch (e) {
-            console.error(e);
-            Alert.alert("Error", "Could not create folder.");
-          }
-        },
-      },
-    ]);
-    console.log("Created new folder.")
-  }, [refreshFiles, currentDir]);
+
+  const showCreateFolderPrompt = () => {
+    setAddPromptVisible(true);
+  };
+
+  const handleCreateFolderSubmit = async (name: string) => {
+    if (!name) return;
+    try {
+      const uniqueName = await getUniqueName(currentDir, name, true);
+      const dir = new Directory(currentDir, uniqueName);
+      dir.create();
+      await refreshFiles();
+    } catch (e) {
+      console.error(e);
+      Alert.alert("Error", "Could not create folder.");
+    }
+    setAddPromptVisible(false);
+  };
+
+  const handleCreateFolderCancel = () => {
+    setAddPromptVisible(false);
+  };
 
   const onGoUp = useCallback(async () => {
     const parentDir = currentDir.parentDirectory;
     if (!parentDir) return;
-
     setCurrentDir(parentDir);
     await refreshFiles();
   }, [currentDir, refreshFiles]);
@@ -155,9 +152,17 @@ export function useFileExplorer() {
     setQuery,
     refreshFiles,
     onDelete,
-    onRename,
+    onRename: showRenamePrompt,
     onOpen,
-    createFolder,
+    createFolder: showCreateFolderPrompt,
     onGoUp,
+    addPromptVisible,
+    handleCreateFolderSubmit,
+    handleCreateFolderCancel,
+    renamePromptVisible,
+    renameFileUri,
+    renameOldName,
+    handleRenameSubmit,
+    setRenamePromptVisible,
   };
 }
