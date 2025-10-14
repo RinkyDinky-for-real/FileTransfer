@@ -11,12 +11,8 @@ export type FileSystemEntry = {
 export async function ensureAppDirectory(path: string) {
   try {
     const dir = new Directory(Paths.document, path);
-    console.log("Checking for dir.")
-    if (dir.exists) console.log(`Directory ${dir.name} exists.`);
     if (!dir.exists) {
-      console.log("Dir not exist, creating dir...")
       dir.create({ intermediates: true });
-      console.log("Dir was created.")
     }
   } catch (e) {
     console.error("ensureAppDirectory error", e);
@@ -26,7 +22,6 @@ export async function ensureAppDirectory(path: string) {
 
 export async function getFilesInDirectory(dir: Directory) {
   try {
-    console.log("Getting files...")
     const entries = await dir.list();
 
     const detailed = await Promise.all(

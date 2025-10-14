@@ -15,7 +15,6 @@ export default function AddfolderPrompt({
   const [inputValue, setInputValue] = useState("");
 
   const handlePressSubmit = () => {
-    console.log("test");
     onSubmit(inputValue);
     setInputValue("");
   };

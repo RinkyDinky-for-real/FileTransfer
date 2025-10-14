@@ -39,7 +39,6 @@ export function useFileExplorer() {
 
   const refreshFiles = useCallback(async () => {
     setLoading(true);
-    console.log("Loading started");
     try {
       await ensureAppDirectory(APP_DIR_NAME);
       const list = await getFilesInDirectory(currentDir);
@@ -49,7 +48,6 @@ export function useFileExplorer() {
       Alert.alert("Feil", "Kunne ikke lese filer.");
     } finally {
       setLoading(false);
-      console.log("Loading finished");
     }
   }, [currentDir]);
 
@@ -82,15 +80,23 @@ export function useFileExplorer() {
   };
 
   const handleRenameSubmit = async (newName: string) => {
-    if (!newName || currentFileName === newName || !targetUri) return;
-    try {
-      const file = new File(targetUri);
-      const uniqueName = await getUniqueName(file, newName);
-      file.rename(uniqueName);
-      await refreshFiles();
-    } catch (e) {
-      console.error("Error renaming file", e);
-      Alert.alert("Error", "Could not rename file.");
+    if (newName && currentFileName !== newName && targetUri) {
+      try {
+        const file = new File(targetUri);
+        const uniqueName = await getUniqueName(file, newName);
+
+        if (uniqueName !== file.name) {
+          const destination = new File(currentDir, uniqueName);
+
+          // This function works on iOS, but has some issues with Android,
+          // must look into it at a later date
+          file.move(destination);
+          await refreshFiles();
+        }
+      } catch (e) {
+        console.error("Error renaming file", e);
+        Alert.alert("Error", "Could not rename file.");
+      }
     }
     setRenamePromptVisible(false);
   };
