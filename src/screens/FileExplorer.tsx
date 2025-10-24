@@ -3,6 +3,9 @@ import { View, ActivityIndicator, FlatList } from "react-native";
 import FileItem from "../components/FileItem";
 import ExplorerHeader from "../components/ExplorerHeader";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
+import AddFolderPrompt from "../components/AddFolderPrompt";
+import RenamePrompt from "../components/RenamePrompt";
+import DeletePrompt from "../components/DeletePrompt";
 import { useFileExplorer } from "../utils/explorerHooks";
 import type { FileSystemEntry } from "../utils/fileUtils";
 
@@ -16,11 +19,22 @@ export default function FileExplorer() {
     query,
     setQuery,
     refreshFiles,
-    onDelete,
-    onRename,
+    showDeletePrompt,
+    showRenamePrompt,
     onOpen,
-    createFolder,
     onGoUp,
+
+    addFolderPromptVisible,
+    setAddFolderPromptVisible,
+    handleCreateFolderSubmit,
+    renamePromptVisible,
+    handleRenameSubmit,
+    setRenamePromptVisible,
+    deletePromptVisible,
+    handleDeleteSubmit,
+    setDeletePromptVisible,
+
+    currentFileName,
   } = useFileExplorer();
 
   if (!currentDir.exists) {
@@ -37,7 +51,7 @@ export default function FileExplorer() {
         query={query}
         setQuery={setQuery}
         onRefresh={refreshFiles}
-        onCreateFolder={createFolder}
+        onCreate={() => setAddFolderPromptVisible(true)}
       />
       <View style={{ flex: 1 }}>
         <CurrentDirectoryPath
@@ -55,8 +69,8 @@ export default function FileExplorer() {
               renderItem={({ item }) => (
                 <FileItem
                   file={item}
-                  onDelete={() => onDelete(item.uri)}
-                  onRename={() => onRename(item.uri, item.name)}
+                  onDelete={() => showDeletePrompt(item.uri)}
+                  onRename={() => showRenamePrompt(item.uri, item.name)}
                   onOpen={() => onOpen(item.uri)}
                 />
               )}
@@ -64,6 +78,25 @@ export default function FileExplorer() {
           )}
         </View>
       </View>
+
+      <AddFolderPrompt
+        visible={addFolderPromptVisible}
+        onCancel={() => setAddFolderPromptVisible(false)}
+        onSubmit={handleCreateFolderSubmit}
+      />
+
+      <RenamePrompt
+        visible={renamePromptVisible}
+        oldName={currentFileName}
+        onCancel={() => setRenamePromptVisible(false)}
+        onSubmit={handleRenameSubmit}
+      />
+
+      <DeletePrompt
+        visible={deletePromptVisible}
+        onCancel={() => setDeletePromptVisible(false)}
+        onSubmit={handleDeleteSubmit}
+      />
     </View>
   );
 }
