@@ -54,6 +54,14 @@ function normalizeUri(uri: string) {
   return decodeURI(uri).replace(/\/$/, "").toLowerCase();
 }
 
+export function popFileName(uri: string) {
+  const filename = uri.split('/').pop();
+  if (!filename) {
+    throw new Error('Invalid file URI');
+  }
+  return filename;
+}
+
 export async function getUniqueName(
   item: File | Directory,
   baseName: string,
