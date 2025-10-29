@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ActivityIndicator, FlatList, TextInput } from "react-native";
+import { View, ActivityIndicator, FlatList } from "react-native";
 import FileItem from "../components/FileItem";
 import ExplorerHeader from "../components/ExplorerHeader";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";

@@ -8,6 +8,7 @@ import RenamePrompt from "../components/RenamePrompt";
 import DeletePrompt from "../components/DeletePrompt";
 import { useFileExplorer } from "../utils/explorerHooks";
 import type { FileSystemEntry } from "../utils/fileUtils";
+import FileRetriever from "../components/FileRetriever";
 
 export default function TransferScreen() {
   const {
@@ -80,6 +81,7 @@ export default function TransferScreen() {
             />
           )}
         </View>
+        <FileRetriever />
       </View>
 
       <AddFolderPrompt
