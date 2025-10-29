@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ActivityIndicator, FlatList, TextInput } from "react-native";
+import { View, Text, ActivityIndicator, FlatList } from "react-native";
 import FileItem from "../components/FileItem";
 import ExplorerHeader from "../components/ExplorerHeader";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
@@ -9,7 +9,7 @@ import DeletePrompt from "../components/DeletePrompt";
 import { useFileExplorer } from "../utils/explorerHooks";
 import type { FileSystemEntry } from "../utils/fileUtils";
 
-export default function FileExplorer() {
+export default function TransferScreen() {
   const {
     filteredFiles,
     loading,
@@ -47,6 +47,9 @@ export default function FileExplorer() {
 
   return (
     <View style={{ flex: 1, padding: 12 }}>
+      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8, paddingTop: 16, textAlign: "center" }}>
+        Select a file to transfer
+      </Text>
       <ExplorerHeader
         query={query}
         setQuery={setQuery}
@@ -100,3 +103,4 @@ export default function FileExplorer() {
     </View>
   );
 }
+
