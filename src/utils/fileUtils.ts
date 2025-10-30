@@ -1,4 +1,5 @@
 import { Directory, File, Paths } from "expo-file-system";
+import { FileTypes, IconName } from "../types/ExplorerTypes";
 
 export async function ensureAppDirectory(path: string) {
   try {
@@ -12,6 +13,14 @@ export async function ensureAppDirectory(path: string) {
   }
 }
 
+function getFileIcon(file: File): IconName {
+  const fileType = file.type?.toLowerCase() ?? "";
+  const match =
+    FileTypes.find((itemType) => fileType.startsWith(itemType.mime)) ??
+    FileTypes.find(() => fileType === "*/*");
+  return match?.icon ?? "insert-drive-file";
+}
+
 export async function getFilesInDirectory(dir: Directory) {
   try {
     const entries = await dir.list();
@@ -19,10 +28,14 @@ export async function getFilesInDirectory(dir: Directory) {
     const detailed = await Promise.all(
       entries.map(async (entry) => {
         const info = await entry.info();
+        const entryIcon =
+          entry instanceof Directory ? "folder" : getFileIcon(entry);
+
         return {
           name: entry.name,
           uri: entry.uri,
           isDirectory: entry instanceof Directory,
+          icon: entryIcon,
           size: info.size ?? 0,
           modificationTime: info.modificationTime ?? 0,
         };

@@ -15,8 +15,6 @@ export default function FileItem({
   onRename,
   onOpen,
 }: FileItemProps) {
-  const isFolder = file.isDirectory;
-
   return (
     <TouchableOpacity
       onPress={onOpen}
@@ -29,10 +27,7 @@ export default function FileItem({
       }}
     >
       <View style={{ width: 36 }}>
-        <MaterialIcons
-          name={isFolder ? "folder" : "insert-drive-file"}
-          size={28}
-        />
+        <MaterialIcons name={file.icon} size={28} />
       </View>
 
       <View style={{ flex: 1 }}>

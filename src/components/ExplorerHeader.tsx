@@ -1,6 +1,6 @@
-import React from "react";
-import { View, Text, Pressable, TextInput } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import React from "react";
+import { Pressable, Text, TextInput, View } from "react-native";
 
 type ExplorerHeaderProps = {
   query: string;
@@ -30,7 +30,7 @@ export default function ExplorerHeader({
             opacity: pressed ? 0.4 : 1,
           })}
         >
-          <MaterialIcons name="create-new-folder" size={24} />
+          <MaterialIcons name="add" size={24} />
         </Pressable>
         <Pressable
           onPress={onRefresh}
