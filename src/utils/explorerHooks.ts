@@ -1,8 +1,8 @@
+import { Directory, File, Paths } from "expo-file-system";
 import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { Directory, File, Paths } from "expo-file-system";
+import type { FileSystemEntry } from "../types/ExplorerTypes";
 import {
-  FileSystemEntry,
   ensureAppDirectory,
   getFilesInDirectory,
   getUniqueName,

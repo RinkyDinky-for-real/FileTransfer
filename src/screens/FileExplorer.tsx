@@ -1,13 +1,13 @@
 import React from "react";
-import { View, ActivityIndicator, FlatList } from "react-native";
-import FileItem from "../components/FileItem";
-import ExplorerHeader from "../components/ExplorerHeader";
-import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
+import { ActivityIndicator, FlatList, View } from "react-native";
 import AddFolderPrompt from "../components/AddFolderPrompt";
-import RenamePrompt from "../components/RenamePrompt";
+import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
 import DeletePrompt from "../components/DeletePrompt";
+import ExplorerHeader from "../components/ExplorerHeader";
+import FileItem from "../components/FileItem";
+import RenamePrompt from "../components/RenamePrompt";
+import type { FileSystemEntry } from "../types/ExplorerTypes";
 import { useFileExplorer } from "../utils/explorerHooks";
-import type { FileSystemEntry } from "../utils/fileUtils";
 
 export default function FileExplorer() {
   const {

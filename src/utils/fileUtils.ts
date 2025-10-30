@@ -1,12 +1,4 @@
-import { File, Directory, Paths } from "expo-file-system";
-
-export type FileSystemEntry = {
-  name: string;
-  uri: string;
-  isDirectory: boolean;
-  size: number;
-  modificationTime: number;
-};
+import { Directory, File, Paths } from "expo-file-system";
 
 export async function ensureAppDirectory(path: string) {
   try {

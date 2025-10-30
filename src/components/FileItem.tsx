@@ -1,7 +1,20 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
+import type { FileSystemEntry } from "../types/ExplorerTypes";
 
-export default function FileItem({ file, onDelete, onRename, onOpen }) {
+interface FileItemProps {
+  file: FileSystemEntry;
+  onDelete: () => void;
+  onRename: () => void;
+  onOpen: () => void;
+}
+
+export default function FileItem({
+  file,
+  onDelete,
+  onRename,
+  onOpen,
+}: FileItemProps) {
   const isFolder = file.isDirectory;
 
   return (
