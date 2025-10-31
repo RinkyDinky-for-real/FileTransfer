@@ -1,108 +1,76 @@
-import React from "react";
-import { View, Text, ActivityIndicator, FlatList } from "react-native";
-import FileItem from "../components/FileItem";
-import ExplorerHeader from "../components/ExplorerHeader";
-import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
-import AddFolderPrompt from "../components/AddFolderPrompt";
-import RenamePrompt from "../components/RenamePrompt";
-import DeletePrompt from "../components/DeletePrompt";
-import { useFileExplorer } from "../utils/explorerHooks";
-import type { FileSystemEntry } from "../utils/fileUtils";
-import FileRetriever from "../components/FileRetriever";
+import React, { useState } from "react";
+import { View, Text, Button, Alert, TextInput } from "react-native";
+import * as DocumentPicker from "expo-document-picker";
+import { uploadFile, downloadFile } from "../utils/transferApi";
 
 export default function TransferScreen() {
-  const {
-    filteredFiles,
-    loading,
-    currentDir,
-    APP_DIR_NAME,
-    APP_DIR,
-    query,
-    setQuery,
-    refreshFiles,
-    showDeletePrompt,
-    showRenamePrompt,
-    onOpen,
-    onGoUp,
+  const [pin, setPin] = useState<string | null>(null);
+  const [downloadPin, setDownloadPin] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    addFolderPromptVisible,
-    setAddFolderPromptVisible,
-    handleCreateFolderSubmit,
-    renamePromptVisible,
-    handleRenameSubmit,
-    setRenamePromptVisible,
-    deletePromptVisible,
-    handleDeleteSubmit,
-    setDeletePromptVisible,
+  const handlePickFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync();
+      if (!result.assets || result.assets.length === 0) return;
 
-    currentFileName,
-  } = useFileExplorer();
+      const file = result.assets[0];
+      setLoading(true);
+      const response = await uploadFile(file.uri, file.name);
+      setPin(response.pin);
+      Alert.alert("Success", `Your file PIN: ${response.pin}`);
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  if (!currentDir.exists) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+  const handleDownload = async () => {
+  if (!downloadPin) return Alert.alert("Error", "Enter a PIN");
+  setLoading(true);
+  try {
+    const localUri = await downloadFile(downloadPin, `downloaded_${Date.now()}`);
+    Alert.alert("Downloaded!", `File saved to ${localUri}`);
+  } catch (err: any) {
+    Alert.alert("Error", err.message);
+  } finally {
+    setLoading(false);
   }
+};
+
 
   return (
-    <View style={{ flex: 1, padding: 12 }}>
-      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8, paddingTop: 16, textAlign: "center" }}>
-        Select a file to transfer
+    <View style={{ flex: 1, padding: 16 }}>
+      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
+        Upload a file
       </Text>
-      <ExplorerHeader
-        query={query}
-        setQuery={setQuery}
-        onRefresh={refreshFiles}
-        onCreate={() => setAddFolderPromptVisible(true)}
-      />
-      <View style={{ flex: 1 }}>
-        <CurrentDirectoryPath
-          path={`${APP_DIR_NAME}/${currentDir.uri.replace(APP_DIR.uri, "")}`}
-          canGoUp={currentDir.uri !== APP_DIR.uri}
-          onGoUp={onGoUp}
+      <Button title="Pick & Upload File" onPress={handlePickFile} disabled={loading} />
+
+      {pin && (
+        <Text style={{ marginTop: 12, fontSize: 16 }}>
+          Your current PIN: {pin}
+        </Text>
+      )}
+
+      <View style={{ marginTop: 32 }}>
+        <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
+          Download a file
+        </Text>
+        <Text>Enter PIN:</Text>
+        <TextInput
+          placeholder="PIN"
+          value={downloadPin}
+          onChangeText={setDownloadPin}
+          style={{
+            borderWidth: 1,
+            borderColor: "#ccc",
+            borderRadius: 6,
+            padding: 8,
+            marginVertical: 8,
+          }}
         />
-        <View style={{ flex: 1 }}>
-          {loading ? (
-            <ActivityIndicator />
-          ) : (
-            <FlatList<FileSystemEntry>
-              data={filteredFiles}
-              keyExtractor={(item) => item.uri}
-              renderItem={({ item }) => (
-                <FileItem
-                  file={item}
-                  onDelete={() => showDeletePrompt(item.uri)}
-                  onRename={() => showRenamePrompt(item.uri, item.name)}
-                  onOpen={() => onOpen(item.uri)}
-                />
-              )}
-            />
-          )}
-        </View>
-        <FileRetriever />
+        <Button title="Download File" onPress={handleDownload} disabled={loading} />
       </View>
-
-      <AddFolderPrompt
-        visible={addFolderPromptVisible}
-        onCancel={() => setAddFolderPromptVisible(false)}
-        onSubmit={handleCreateFolderSubmit}
-      />
-
-      <RenamePrompt
-        visible={renamePromptVisible}
-        oldName={currentFileName}
-        onCancel={() => setRenamePromptVisible(false)}
-        onSubmit={handleRenameSubmit}
-      />
-
-      <DeletePrompt
-        visible={deletePromptVisible}
-        onCancel={() => setDeletePromptVisible(false)}
-        onSubmit={handleDeleteSubmit}
-      />
     </View>
   );
 }
-
