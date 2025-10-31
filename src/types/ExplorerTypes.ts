@@ -17,6 +17,7 @@ export interface FileTypeInfo {
 }
 
 export const FileTypes: FileTypeInfo[] = [
+  // images
   {
     mime: "image/png",
     extensions: [".png"],
@@ -29,6 +30,57 @@ export const FileTypes: FileTypeInfo[] = [
     category: "image",
     icon: "image",
   },
+  // videos
+  {
+    mime: "video/mp4",
+    extensions: [".mp4"],
+    category: "video",
+    icon: "movie",
+  },
+  {
+    mime: "video/mpeg",
+    extensions: [".mpeg", ".mpg"],
+    category: "video",
+    icon: "movie",
+  },
+  {
+    mime: "video/quicktime",
+    extensions: [".mov"],
+    category: "video",
+    icon: "movie",
+  },
+  {
+    mime: "video/x-matroska",
+    extensions: [".mkv"],
+    category: "video",
+    icon: "movie",
+  },
+  // audio
+  {
+    mime: "audio/mpeg",
+    extensions: [".mp3"],
+    category: "audio",
+    icon: "music-note",
+  },
+  {
+    mime: "audio/wav",
+    extensions: [".wav"],
+    category: "audio",
+    icon: "music-note",
+  },
+  {
+    mime: "audio/aac",
+    extensions: [".aac"],
+    category: "audio",
+    icon: "music-note",
+  },
+  {
+    mime: "audio/ogg",
+    extensions: [".ogg"],
+    category: "audio",
+    icon: "music-note",
+  },
+  // documents
   {
     mime: "application/pdf",
     extensions: [".pdf"],
