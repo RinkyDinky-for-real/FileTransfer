@@ -1,4 +1,4 @@
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 
 const SERVER_URL = "https://unvirulent-prunted-kacy.ngrok-free.dev";
 
@@ -24,12 +24,19 @@ export async function downloadFile(pin: string, localFileName: string) {
   if (!res.ok) throw new Error("Invalid PIN");
 
   const arrayBuffer = await res.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
+
+  let binary = "";
+  const bytes = new Uint8Array(arrayBuffer);
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode.apply(null, Array.from(chunk));
+  }
+  const base64 = btoa(binary);
 
   const localUri = (FileSystem as any).documentDirectory + localFileName;
-
-  await (FileSystem as any).writeAsStringAsync(localUri, buffer.toString("base64"), {
-    encoding: (FileSystem as any).EncodingType.BASE64,
+  await (FileSystem as any).writeAsStringAsync(localUri, base64, {
+    encoding: "base64",
   });
 
   return localUri;
