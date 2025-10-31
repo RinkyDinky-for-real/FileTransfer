@@ -22,6 +22,7 @@ export default function FileExplorer() {
     showDeletePrompt,
     showRenamePrompt,
     onOpen,
+    importDocumentFiles,
     onGoUp,
 
     addFolderPromptVisible,
@@ -51,7 +52,8 @@ export default function FileExplorer() {
         query={query}
         setQuery={setQuery}
         onRefresh={refreshFiles}
-        onCreate={() => setAddFolderPromptVisible(true)}
+        // onCreate={() => setAddFolderPromptVisible(true)}
+        onCreate={importDocumentFiles}
       />
       <View style={{ flex: 1 }}>
         <CurrentDirectoryPath
