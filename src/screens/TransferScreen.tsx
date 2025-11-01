@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, Button, Alert, TextInput } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as DocumentPicker from "expo-document-picker";
 import { uploadFile, downloadFile } from "../utils/transferApi";
 
@@ -40,7 +41,7 @@ export default function TransferScreen() {
 
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
+    <SafeAreaView style={{ flex: 1, padding: 16 }}>
       <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
         Upload a file
       </Text>
@@ -71,6 +72,6 @@ export default function TransferScreen() {
         />
         <Button title="Download File" onPress={handleDownload} disabled={loading} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
