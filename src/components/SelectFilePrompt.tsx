@@ -3,6 +3,8 @@ import { View, Text, Button, Alert, Modal, FlatList, TouchableOpacity, ActivityI
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Directory, Paths } from "expo-file-system";
+import * as DocumentPicker from "expo-document-picker";
+import { uploadFile } from "../utils/transferApi";
 import { getFilesInDirectory, ensureAppDirectory } from "../utils/fileUtils";
 import type { FileSystemEntry } from "../utils/fileUtils";
 import CurrentDirectoryPath from "./CurrentDirectoryPath";
@@ -12,15 +14,15 @@ const APP_DIR_NAME = "Core/Files";
 type SelectFilePromptProps = {
   visible: boolean;
   onClose: () => void;
-  onFileSelect: (file: FileSystemEntry) => Promise<void>;
-  onViewMore: () => Promise<void>;
+  onUploadSuccess?: (pin: string) => void;
+  onLoadingChange?: (loading: boolean) => void;
 };
 
 export default function SelectFilePrompt({
   visible,
   onClose,
-  onFileSelect,
-  onViewMore,
+  onUploadSuccess,
+  onLoadingChange,
 }: SelectFilePromptProps) {
   const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
   const [files, setFiles] = useState<FileSystemEntry[]>([]);
@@ -84,13 +86,45 @@ export default function SelectFilePrompt({
     await refreshFiles();
   }, [currentDir, refreshFiles]);
 
+  const handleSelectFile = async (file: FileSystemEntry) => {
+    onClose();
+    if (onLoadingChange) onLoadingChange(true);
+    try {
+      const response = await uploadFile(file.uri, file.name);
+      if (onUploadSuccess) onUploadSuccess(response.pin);
+      Alert.alert("Success", `Your file PIN: ${response.pin}`);
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    } finally {
+      if (onLoadingChange) onLoadingChange(false);
+    }
+  };
+
+  const handleViewMore = async () => {
+    onClose();
+    try {
+      const result = await DocumentPicker.getDocumentAsync();
+      if (!result.assets || result.assets.length === 0) return;
+
+      const file = result.assets[0];
+      if (onLoadingChange) onLoadingChange(true);
+      const response = await uploadFile(file.uri, file.name);
+      if (onUploadSuccess) onUploadSuccess(response.pin);
+      Alert.alert("Success", `Your file PIN: ${response.pin}`);
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    } finally {
+      if (onLoadingChange) onLoadingChange(false);
+    }
+  };
+
   const handleSelectItem = async (file: FileSystemEntry) => {
     if (file.isDirectory) {
       await handleOpenDirectory(file.uri);
       return;
     }
     
-    await onFileSelect(file);
+    await handleSelectFile(file);
   };
 
   return (
@@ -125,7 +159,7 @@ export default function SelectFilePrompt({
             <Text style={{ fontSize: 16, color: "#666", marginBottom: 16 }}>
               No files found in this directory
             </Text>
-            <Button title="View More" onPress={onViewMore} />
+            <Button title="View More" onPress={handleViewMore} />
           </View>
         ) : (
           <>
@@ -163,7 +197,7 @@ export default function SelectFilePrompt({
               )}
             />
             <View style={{ paddingTop: 16 }}>
-              <Button title="View More" onPress={onViewMore} />
+              <Button title="View More" onPress={handleViewMore} />
             </View>
           </>
         )}

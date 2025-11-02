@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Button, Alert, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as DocumentPicker from "expo-document-picker";
-import { uploadFile, downloadFile } from "../utils/transferApi";
-import type { FileSystemEntry } from "../utils/fileUtils";
+import { downloadFile } from "../utils/transferApi";
 import SelectFilePrompt from "../components/SelectFilePrompt";
 
 export default function TransferScreen() {
@@ -14,38 +12,6 @@ export default function TransferScreen() {
 
   const handlePickFile = async () => {
     setShowFilePicker(true);
-  };
-
-  const handleSelectFile = async (file: FileSystemEntry) => {
-    setShowFilePicker(false);
-    setLoading(true);
-    try {
-      const response = await uploadFile(file.uri, file.name);
-      setPin(response.pin);
-      Alert.alert("Success", `Your file PIN: ${response.pin}`);
-    } catch (err: any) {
-      Alert.alert("Error", err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleViewMore = async () => {
-    setShowFilePicker(false);
-    try {
-      const result = await DocumentPicker.getDocumentAsync();
-      if (!result.assets || result.assets.length === 0) return;
-
-      const file = result.assets[0];
-      setLoading(true);
-      const response = await uploadFile(file.uri, file.name);
-      setPin(response.pin);
-      Alert.alert("Success", `Your file PIN: ${response.pin}`);
-    } catch (err: any) {
-      Alert.alert("Error", err.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleDownload = async () => {
@@ -98,8 +64,8 @@ export default function TransferScreen() {
       <SelectFilePrompt
         visible={showFilePicker}
         onClose={() => setShowFilePicker(false)}
-        onFileSelect={handleSelectFile}
-        onViewMore={handleViewMore}
+        onUploadSuccess={(pin) => setPin(pin)}
+        onLoadingChange={setLoading}
       />
     </SafeAreaView>
   );
