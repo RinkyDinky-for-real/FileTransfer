@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, Button, Alert, Modal, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
+import React, { useState, useEffect, useCallback, Fragment } from "react";
+import { View, Text, Button, Alert, Modal, FlatList, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Directory, Paths } from "expo-file-system";
 import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import { uploadFile } from "../utils/transferApi";
 import { getFilesInDirectory, ensureAppDirectory } from "../utils/fileUtils";
 import type { FileSystemEntry } from "../utils/fileUtils";
@@ -118,6 +119,35 @@ export default function SelectFilePrompt({
     }
   };
 
+    const handleViewMedia = async () => {
+    onClose();
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: false,
+        quality: 1
+      });
+      if (!result.assets || result.assets.length === 0) return;
+
+      const file = result.assets[0];
+      const fileName = "";
+
+      const parts = file.uri.split(".");
+      if (parts.length > 1) {
+        const extension = parts.pop()!.toLowerCase();
+        const fileName = file.fileName || `image_${Date.now()}.${extension}`;
+      } else throw new Error("Invalid media file");
+
+      if (onLoadingChange) onLoadingChange(true);
+      const response = await uploadFile(file.uri, fileName);
+      if (onUploadSuccess) onUploadSuccess(response.pin);
+      Alert.alert("Success", `Your file PIN: ${response.pin}`);
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    } finally {
+      if (onLoadingChange) onLoadingChange(false);
+    }
+  };
+
   const handleSelectItem = async (file: FileSystemEntry) => {
     if (file.isDirectory) {
       await handleOpenDirectory(file.uri);
@@ -155,11 +185,13 @@ export default function SelectFilePrompt({
             <ActivityIndicator size="large" />
           </View>
         ) : files.length === 0 ? (
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap:"8"}}>
             <Text style={{ fontSize: 16, color: "#666", marginBottom: 16 }}>
               No files found in this directory
             </Text>
-            <Button title="View More" onPress={handleViewMore} />
+            <Button title="View Files" onPress={handleViewMore} />
+            <Button title="View Media" onPress={handleViewMedia} />
+
           </View>
         ) : (
           <>
@@ -196,8 +228,9 @@ export default function SelectFilePrompt({
                 </TouchableOpacity>
               )}
             />
-            <View style={{ paddingTop: 16 }}>
-              <Button title="View More" onPress={handleViewMore} />
+            <View style={{ gap: 8 }}>
+              <Button title="View Files" onPress={handleViewMore} />
+              <Button title="View Media" onPress={handleViewMedia} />
             </View>
           </>
         )}
