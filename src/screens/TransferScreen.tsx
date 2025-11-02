@@ -18,7 +18,7 @@ export default function TransferScreen() {
   if (!downloadPin) return Alert.alert("Error", "Enter a PIN");
   setLoading(true);
   try {
-    const localUri = await downloadFile(downloadPin, `downloaded_${Date.now()}`);
+    const localUri = await downloadFile(downloadPin);
     Alert.alert("Downloaded!", `File saved to ${localUri}`);
   } catch (err: any) {
     Alert.alert("Error", err.message);
@@ -26,7 +26,6 @@ export default function TransferScreen() {
     setLoading(false);
   }
 };
-
 
   return (
     <SafeAreaView style={{ flex: 1, padding: 16 }}>

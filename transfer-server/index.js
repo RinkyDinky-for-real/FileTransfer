@@ -39,7 +39,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
     createdAt: Date.now(),
   });
 
-  res.json({ pin });
+  res.json({ pin, name: req.file.originalname });
 });
 
 app.get("/download/:pin", (req, res) => {

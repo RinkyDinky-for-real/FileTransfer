@@ -129,12 +129,12 @@ export default function SelectFilePrompt({
       if (!result.assets || result.assets.length === 0) return;
 
       const file = result.assets[0];
-      const fileName = "";
+      let fileName = "";
 
       const parts = file.uri.split(".");
       if (parts.length > 1) {
         const extension = parts.pop()!.toLowerCase();
-        const fileName = file.fileName || `image_${Date.now()}.${extension}`;
+        fileName = file.fileName || `image_${Date.now()}.${extension}`;
       } else throw new Error("Invalid media file");
 
       if (onLoadingChange) onLoadingChange(true);
