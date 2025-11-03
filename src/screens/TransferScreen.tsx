@@ -3,28 +3,24 @@ import { View, Text, Button, Alert, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { downloadFile } from "../utils/transferApi";
 import SelectFilePrompt from "../components/SelectFilePrompt";
+import SelectDirectoryDowloadPrompt from "../components/SelectDirectoryDowloadPrompt";
 
 export default function TransferScreen() {
   const [pin, setPin] = useState<string | null>(null);
   const [downloadPin, setDownloadPin] = useState("");
   const [loading, setLoading] = useState(false);
   const [showFilePicker, setShowFilePicker] = useState(false);
+  const [showDirectoryPicker, setShowDirectoryPicker] = useState(false);
 
   const handlePickFile = async () => {
     setShowFilePicker(true);
   };
 
-  const handleDownload = async () => {
-  if (!downloadPin) return Alert.alert("Error", "Enter a PIN");
-  setLoading(true);
-  try {
-    const localUri = await downloadFile(downloadPin);
-    Alert.alert("Downloaded!", `File saved to ${localUri}`);
-  } catch (err: any) {
-    Alert.alert("Error", err.message);
-  } finally {
-    setLoading(false);
-  }
+const handleDownload = () => {
+  if (!downloadPin)
+    return Alert.alert("Error", "Enter a PIN");
+
+  setShowDirectoryPicker(true);
 };
 
   return (
@@ -65,6 +61,25 @@ export default function TransferScreen() {
         onClose={() => setShowFilePicker(false)}
         onUploadSuccess={(pin) => setPin(pin)}
         onLoadingChange={setLoading}
+      />
+      <SelectDirectoryDowloadPrompt
+        visible={showDirectoryPicker}
+        onClose={() => setShowDirectoryPicker(false)}
+        onLoadingChange={setLoading}
+        onDownloadDirectoryPicked={async (path) => {
+          setShowDirectoryPicker(false);
+          try {
+            setLoading(true);
+            const destination = path.split("Core/Files")[1];
+            const localUri = await downloadFile(downloadPin, destination);
+
+            Alert.alert("Downloaded!", `File saved to ${localUri}`);
+          } catch (err: any) {
+            Alert.alert("Error", err.message);
+          } finally {
+            setLoading(false);
+          }
+        }}
       />
     </SafeAreaView>
   );
