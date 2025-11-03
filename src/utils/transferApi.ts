@@ -16,11 +16,11 @@ export async function uploadFile(fileUri: string, fileName: string) {
     body: formData
   });
 
-  if (!res.ok) throw new Error("Upload failed");
+  if (!res.ok) throw new Error("Upload failed in API");
   return await res.json();
 }
 
-export async function downloadFile(pin: string) {
+export async function downloadFile(pin: string, downloadPath: string) {
   const res = await fetch(`${SERVER_URL}/download/${pin}`);
   if (!res.ok) throw new Error("Invalid PIN");
 
@@ -41,7 +41,7 @@ export async function downloadFile(pin: string) {
     binary += String.fromCharCode.apply(null, Array.from(chunk));
   }
   const base64 = btoa(binary);
-  const localUri = (FileSystem as any).documentDirectory + APP_DIR_NAME + "/" + filename;
+  const localUri = (FileSystem as any).documentDirectory + APP_DIR_NAME + downloadPath + filename;
   console.log("Saving to", localUri);
   await (FileSystem as any).writeAsStringAsync(localUri, base64, {
     encoding: "base64",
