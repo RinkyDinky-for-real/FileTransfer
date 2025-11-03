@@ -28,7 +28,7 @@ export default function ImportFilesPrompt({
             <Button title="Media" onPress={() => onSubmit("image")} />
           </View>
           <View style={styles.modalButtonContainer}>
-            <Button title="Cancel" onPress={() => onCancel} color="#888" />
+            <Button title="Cancel" onPress={() => onCancel()} color="#888" />
           </View>
         </View>
       </View>
