@@ -21,10 +21,9 @@ export default function FileExplorer() {
     query,
     setQuery,
     refreshFiles,
-    showDeletePrompt,
-    showRenamePrompt,
     onOpen,
     importFiles,
+    exportFile,
     onGoUp,
 
     importFilesPromptVisible,
@@ -40,6 +39,8 @@ export default function FileExplorer() {
     setDeletePromptVisible,
 
     currentFileName,
+    setCurrentFileName,
+    setTargetUri,
   } = useFileExplorer();
 
   if (!currentDir.exists) {
@@ -75,8 +76,16 @@ export default function FileExplorer() {
               renderItem={({ item }) => (
                 <FileItem
                   file={item}
-                  onDelete={() => showDeletePrompt(item.uri)}
-                  onRename={() => showRenamePrompt(item.uri, item.name)}
+                  onDelete={() => {
+                    setTargetUri(item.uri);
+                    setDeletePromptVisible(true);
+                  }}
+                  onRename={() => {
+                    setTargetUri(item.uri);
+                    setCurrentFileName(item.name);
+                    setRenamePromptVisible(true);
+                  }}
+                  onExport={() => exportFile(item.uri)}
                   onOpen={() => onOpen(item.uri)}
                 />
               )}

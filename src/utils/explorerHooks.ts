@@ -1,6 +1,7 @@
 import * as DocumentPicker from "expo-document-picker";
 import { Directory, File, Paths } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
+import * as Sharing from "expo-sharing";
 import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import type { FileCategory, FileSystemEntry } from "../types/ExplorerTypes";
@@ -59,9 +60,26 @@ export function useFileExplorer() {
     refreshFiles();
   }, [refreshFiles]);
 
-  const showDeletePrompt = (fileUri: string) => {
-    setTargetUri(fileUri);
-    setDeletePromptVisible(true);
+  const exportFile = async (fileUri: string) => {
+    if (fileUri === "") return;
+    try {
+      Paths.cache.list().forEach((file) => {
+        file.delete();
+      });
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (!isAvailable) return;
+
+      const file = new File(fileUri);
+      file.copy(Paths.cache);
+
+      const copyfile = new File(Paths.cache, file.name);
+
+      await Sharing.shareAsync(copyfile.uri);
+      copyfile.delete();
+    } catch (e) {
+      console.error("Error exporting file", e);
+      Alert.alert("Error", "Could not export file.");
+    }
   };
 
   const handleDeleteSubmit = async () => {
@@ -75,12 +93,6 @@ export function useFileExplorer() {
       Alert.alert("Error", "Could not delete file.");
     }
     setDeletePromptVisible(false);
-  };
-
-  const showRenamePrompt = (fileUri: string, oldName: string) => {
-    setTargetUri(fileUri);
-    setCurrentFileName(oldName);
-    setRenamePromptVisible(true);
   };
 
   const handleRenameSubmit = async (newName: string) => {
@@ -141,8 +153,6 @@ export function useFileExplorer() {
           fileName = importedFile.fileName ?? "untitled";
         }
 
-        console.log(fileName);
-
         const uniqueName: string = await getUniqueName(
           currentDir,
           fileName,
@@ -157,6 +167,7 @@ export function useFileExplorer() {
       console.error(e);
       Alert.alert("Error", "Could not import document files.");
     }
+    setImportFilesPromptVisible(false);
   };
 
   const handleCreateFolderSubmit = async (name: string) => {
@@ -193,10 +204,9 @@ export function useFileExplorer() {
     query,
     setQuery,
     refreshFiles,
-    showDeletePrompt,
-    showRenamePrompt,
     onOpen,
     importFiles,
+    exportFile,
     onGoUp,
 
     importFilesPromptVisible,
@@ -212,5 +222,7 @@ export function useFileExplorer() {
     setDeletePromptVisible,
 
     currentFileName,
+    setCurrentFileName,
+    setTargetUri,
   };
 }

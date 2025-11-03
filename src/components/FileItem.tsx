@@ -6,6 +6,7 @@ interface FileItemProps {
   file: FileSystemEntry;
   onDelete: () => void;
   onRename: () => void;
+  onExport: () => void;
   onOpen: () => void;
 }
 
@@ -13,6 +14,7 @@ export default function FileItem({
   file,
   onDelete,
   onRename,
+  onExport,
   onOpen,
 }: FileItemProps) {
   return (
@@ -39,6 +41,9 @@ export default function FileItem({
 
       <TouchableOpacity onPress={onRename} style={{ padding: 6 }}>
         <MaterialIcons name="drive-file-rename-outline" size={20} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onExport} style={{ padding: 6 }}>
+        <MaterialIcons name="share" size={20} />
       </TouchableOpacity>
       <TouchableOpacity onPress={onDelete} style={{ padding: 6 }}>
         <MaterialIcons name="delete-outline" size={20} color="#c00" />
