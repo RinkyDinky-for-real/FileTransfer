@@ -5,10 +5,13 @@ import FileItem from "../components/FileItem";
 import ExplorerHeader from "../components/ExplorerHeader";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
 import AddFolderPrompt from "../components/AddFolderPrompt";
-import RenamePrompt from "../components/RenamePrompt";
+import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
 import DeletePrompt from "../components/DeletePrompt";
+import ExplorerHeader from "../components/ExplorerHeader";
+import FileItem from "../components/FileItem";
+import RenamePrompt from "../components/RenamePrompt";
+import type { FileSystemEntry } from "../types/ExplorerTypes";
 import { useFileExplorer } from "../utils/explorerHooks";
-import type { FileSystemEntry } from "../utils/fileUtils";
 
 export default function FileExplorer() {
   const {
@@ -23,6 +26,7 @@ export default function FileExplorer() {
     showDeletePrompt,
     showRenamePrompt,
     onOpen,
+    importDocumentFiles,
     onGoUp,
 
     addFolderPromptVisible,
@@ -52,7 +56,8 @@ export default function FileExplorer() {
         query={query}
         setQuery={setQuery}
         onRefresh={refreshFiles}
-        onCreate={() => setAddFolderPromptVisible(true)}
+        // onCreate={() => setAddFolderPromptVisible(true)}
+        onCreate={importDocumentFiles}
       />
       <View style={{ flex: 1 }}>
         <CurrentDirectoryPath

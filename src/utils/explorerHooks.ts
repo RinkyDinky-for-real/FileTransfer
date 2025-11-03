@@ -1,8 +1,9 @@
+import * as DocumentPicker from "expo-document-picker";
+import { Directory, File, Paths } from "expo-file-system";
 import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { Directory, File, Paths } from "expo-file-system";
+import type { FileSystemEntry } from "../types/ExplorerTypes";
 import {
-  FileSystemEntry,
   ensureAppDirectory,
   getFilesInDirectory,
   getUniqueName,
@@ -110,6 +111,35 @@ export function useFileExplorer() {
     }
   };
 
+  const importDocumentFiles = async () => {
+    try {
+      const { assets, canceled } = await DocumentPicker.getDocumentAsync({
+        multiple: true,
+        copyToCacheDirectory: true,
+      });
+      if (canceled) return;
+
+      assets.forEach(async (documentFile) => {
+        const newFile = new File(documentFile.uri);
+
+        console.log(documentFile.name);
+
+        const uniqueName: string = await getUniqueName(
+          currentDir,
+          documentFile.name,
+          true
+        );
+        newFile.rename(uniqueName);
+        newFile.move(currentDir);
+
+        await refreshFiles();
+      });
+    } catch (e) {
+      console.error(e);
+      Alert.alert("Error", "Could not import document files.");
+    }
+  };
+
   const handleCreateFolderSubmit = async (name: string) => {
     if (!name) return;
     try {
@@ -147,6 +177,7 @@ export function useFileExplorer() {
     showDeletePrompt,
     showRenamePrompt,
     onOpen,
+    importDocumentFiles,
     onGoUp,
 
     addFolderPromptVisible,

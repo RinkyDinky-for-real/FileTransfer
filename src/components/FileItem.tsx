@@ -1,9 +1,20 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
+import type { FileSystemEntry } from "../types/ExplorerTypes";
 
-export default function FileItem({ file, onDelete, onRename, onOpen }) {
-  const isFolder = file.isDirectory;
+interface FileItemProps {
+  file: FileSystemEntry;
+  onDelete: () => void;
+  onRename: () => void;
+  onOpen: () => void;
+}
 
+export default function FileItem({
+  file,
+  onDelete,
+  onRename,
+  onOpen,
+}: FileItemProps) {
   return (
     <TouchableOpacity
       onPress={onOpen}
@@ -16,10 +27,7 @@ export default function FileItem({ file, onDelete, onRename, onOpen }) {
       }}
     >
       <View style={{ width: 36 }}>
-        <MaterialIcons
-          name={isFolder ? "folder" : "insert-drive-file"}
-          size={28}
-        />
+        <MaterialIcons name={file.icon} size={28} />
       </View>
 
       <View style={{ flex: 1 }}>
