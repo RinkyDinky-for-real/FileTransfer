@@ -65,7 +65,6 @@ const handleDownload = () => {
       <SelectDirectoryDowloadPrompt
         visible={showDirectoryPicker}
         onClose={() => setShowDirectoryPicker(false)}
-        onLoadingChange={setLoading}
         onDownloadDirectoryPicked={async (path) => {
           setShowDirectoryPicker(false);
           try {

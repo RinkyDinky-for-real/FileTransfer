@@ -5,6 +5,8 @@ import { Directory, Paths } from "expo-file-system";
 import { getFilesInDirectory, ensureAppDirectory } from "../utils/fileUtils";
 import type { FileSystemEntry } from "../utils/fileUtils";
 import CurrentDirectoryPath from "./CurrentDirectoryPath";
+import AddFolderPrompt from "./AddFolderPrompt";
+import { getUniqueName } from "../utils/fileUtils";
 
 const APP_DIR_NAME = "Core/Files";
 const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
@@ -12,18 +14,17 @@ const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
 type SelectDirectoryDowloadPromptProps = {
   visible: boolean;
   onClose: () => void;
-  onLoadingChange?: (loading: boolean) => void;
   onDownloadDirectoryPicked: (path: string) => void;
 };
 
 export default function SelectDirectoryDowloadPrompt({
   visible,
   onClose,
-  onLoadingChange,
   onDownloadDirectoryPicked: onDownloadPicked,
 }: SelectDirectoryDowloadPromptProps) {
   const [files, setFiles] = useState<FileSystemEntry[]>([]);
   const [currentDir, setCurrentDir] = useState<Directory | null>(null);
+  const [addFolderPromptVisible, setAddFolderPromptVisible] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -42,7 +43,6 @@ export default function SelectDirectoryDowloadPrompt({
 
   const refreshFiles = useCallback(async () => {
     if (!currentDir) return;
-    onLoadingChange?.(true);
     try {
       await ensureAppDirectory(APP_DIR_NAME);
       const list = await getFilesInDirectory(currentDir);
@@ -51,8 +51,6 @@ export default function SelectDirectoryDowloadPrompt({
     } catch (e) {
       console.error("Error reading files", e);
       Alert.alert("Error", "Could not read files.");
-    } finally {
-      onLoadingChange?.(false);
     }
   }, [currentDir]);
 
@@ -83,6 +81,20 @@ export default function SelectDirectoryDowloadPrompt({
     await refreshFiles();
   }, [currentDir, refreshFiles]);
 
+    const handleCreateFolderSubmit = async (name: string) => {
+      if (!name) return;
+      try {
+        const uniqueName = await getUniqueName(currentDir!, name, true);
+        const dir = new Directory(currentDir!, uniqueName);
+        dir.create();
+        await refreshFiles();
+      } catch (e) {
+        console.error(e);
+        Alert.alert("Error", "Could not create folder.");
+      }
+      setAddFolderPromptVisible(false);
+    };
+
   return (
     <Modal
       visible={visible}
@@ -107,12 +119,14 @@ export default function SelectDirectoryDowloadPrompt({
         )}
 
         {files.length === 0 ? (
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap:"8"}}>
-            <Text style={{ fontSize: 16, color: "#666", marginBottom: 16 }}>
-              No files found in this directory
-            </Text>
-            <Button title={`Download to ${currentDir?.name}`} />
-          </View>
+            <>
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap:"8"}}>
+                    <Button title="Add directory?" onPress={() => setAddFolderPromptVisible(true)} />
+                </View>
+                <View style={{ gap: 8 }}>
+                    <Button title={`Download to "${currentDir?.name}"`} onPress={() => onDownloadPicked(currentDir?.uri!)} />
+                </View>
+            </>
         ) : (
           <>
             <FlatList<FileSystemEntry>
@@ -154,7 +168,13 @@ export default function SelectDirectoryDowloadPrompt({
           </>
         )}
       </View>
+      <AddFolderPrompt
+        visible={addFolderPromptVisible}
+        onCancel={() => setAddFolderPromptVisible(false)}
+        onSubmit={handleCreateFolderSubmit}
+      />
     </Modal>
+    
   );
 }
 
