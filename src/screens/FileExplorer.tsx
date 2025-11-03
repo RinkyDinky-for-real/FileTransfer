@@ -1,5 +1,9 @@
 import React from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import { View, ActivityIndicator, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import FileItem from "../components/FileItem";
+import ExplorerHeader from "../components/ExplorerHeader";
+import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
 import AddFolderPrompt from "../components/AddFolderPrompt";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
 import DeletePrompt from "../components/DeletePrompt";
@@ -47,7 +51,7 @@ export default function FileExplorer() {
   }
 
   return (
-    <View style={{ flex: 1, padding: 12 }}>
+    <SafeAreaView style={{ flex: 1, padding: 12 }}>
       <ExplorerHeader
         query={query}
         setQuery={setQuery}
@@ -99,6 +103,6 @@ export default function FileExplorer() {
         onCancel={() => setDeletePromptVisible(false)}
         onSubmit={handleDeleteSubmit}
       />
-    </View>
+    </SafeAreaView>
   );
 }
