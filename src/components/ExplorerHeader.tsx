@@ -7,6 +7,7 @@ type ExplorerHeaderProps = {
   setQuery: (value: string) => void;
   onRefresh: () => void;
   onCreate: () => void;
+  onImport: () => void;
 };
 
 export default function ExplorerHeader({
@@ -14,6 +15,7 @@ export default function ExplorerHeader({
   setQuery,
   onRefresh,
   onCreate,
+  onImport,
 }: ExplorerHeaderProps) {
   return (
     <View style={{ marginBottom: 12 }}>
@@ -25,6 +27,15 @@ export default function ExplorerHeader({
         </Text>
         <Pressable
           onPress={onCreate}
+          style={({ pressed }) => ({
+            padding: 6,
+            opacity: pressed ? 0.4 : 1,
+          })}
+        >
+          <MaterialIcons name="create-new-folder" size={24} />
+        </Pressable>
+        <Pressable
+          onPress={onImport}
           style={({ pressed }) => ({
             padding: 6,
             opacity: pressed ? 0.4 : 1,

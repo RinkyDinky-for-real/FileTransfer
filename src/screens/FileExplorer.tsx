@@ -1,14 +1,12 @@
 import React from "react";
-import { View, ActivityIndicator, FlatList } from "react-native";
+import { ActivityIndicator, FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import FileItem from "../components/FileItem";
-import ExplorerHeader from "../components/ExplorerHeader";
-import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
 import AddFolderPrompt from "../components/AddFolderPrompt";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
 import DeletePrompt from "../components/DeletePrompt";
 import ExplorerHeader from "../components/ExplorerHeader";
 import FileItem from "../components/FileItem";
+import ImportFilesPrompt from "../components/ImportFilesPrompt";
 import RenamePrompt from "../components/RenamePrompt";
 import type { FileSystemEntry } from "../types/ExplorerTypes";
 import { useFileExplorer } from "../utils/explorerHooks";
@@ -26,9 +24,11 @@ export default function FileExplorer() {
     showDeletePrompt,
     showRenamePrompt,
     onOpen,
-    importDocumentFiles,
+    importFiles,
     onGoUp,
 
+    importFilesPromptVisible,
+    setImportFilesPromptVisible,
     addFolderPromptVisible,
     setAddFolderPromptVisible,
     handleCreateFolderSubmit,
@@ -56,8 +56,8 @@ export default function FileExplorer() {
         query={query}
         setQuery={setQuery}
         onRefresh={refreshFiles}
-        // onCreate={() => setAddFolderPromptVisible(true)}
-        onCreate={importDocumentFiles}
+        onCreate={() => setAddFolderPromptVisible(true)}
+        onImport={() => setImportFilesPromptVisible(true)}
       />
       <View style={{ flex: 1 }}>
         <CurrentDirectoryPath
@@ -89,6 +89,12 @@ export default function FileExplorer() {
         visible={addFolderPromptVisible}
         onCancel={() => setAddFolderPromptVisible(false)}
         onSubmit={handleCreateFolderSubmit}
+      />
+
+      <ImportFilesPrompt
+        visible={importFilesPromptVisible}
+        onCancel={() => setImportFilesPromptVisible(false)}
+        onSubmit={importFiles}
       />
 
       <RenamePrompt

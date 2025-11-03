@@ -1,8 +1,9 @@
 import * as DocumentPicker from "expo-document-picker";
 import { Directory, File, Paths } from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
-import type { FileSystemEntry } from "../types/ExplorerTypes";
+import type { FileCategory, FileSystemEntry } from "../types/ExplorerTypes";
 import {
   ensureAppDirectory,
   getFilesInDirectory,
@@ -18,6 +19,8 @@ export function useFileExplorer() {
   const [query, setQuery] = useState<string>("");
   const [currentDir, setCurrentDir] = useState<Directory>(APP_DIR);
 
+  const [importFilesPromptVisible, setImportFilesPromptVisible] =
+    useState(false);
   const [addFolderPromptVisible, setAddFolderPromptVisible] = useState(false);
   const [renamePromptVisible, setRenamePromptVisible] = useState(false);
   const [deletePromptVisible, setDeletePromptVisible] = useState(false);
@@ -111,22 +114,38 @@ export function useFileExplorer() {
     }
   };
 
-  const importDocumentFiles = async () => {
+  const importFiles = async (fileType: FileCategory) => {
     try {
-      const { assets, canceled } = await DocumentPicker.getDocumentAsync({
-        multiple: true,
-        copyToCacheDirectory: true,
-      });
-      if (canceled) return;
+      let result:
+        | DocumentPicker.DocumentPickerResult
+        | ImagePicker.ImagePickerResult;
+      if (fileType === "image" || fileType === "video") {
+        result = await ImagePicker.launchImageLibraryAsync({
+          allowsMultipleSelection: true,
+          mediaTypes: ["images", "videos"],
+        });
+      } else {
+        result = await DocumentPicker.getDocumentAsync({
+          multiple: true,
+          copyToCacheDirectory: true,
+        });
+      }
+      if (result.canceled) return;
 
-      assets.forEach(async (documentFile) => {
-        const newFile = new File(documentFile.uri);
+      result.assets.forEach(async (importedFile) => {
+        const newFile = new File(importedFile.uri);
+        let fileName: string;
+        if ("name" in importedFile) {
+          fileName = importedFile.name;
+        } else {
+          fileName = importedFile.fileName ?? "untitled";
+        }
 
-        console.log(documentFile.name);
+        console.log(fileName);
 
         const uniqueName: string = await getUniqueName(
           currentDir,
-          documentFile.name,
+          fileName,
           true
         );
         newFile.rename(uniqueName);
@@ -177,9 +196,11 @@ export function useFileExplorer() {
     showDeletePrompt,
     showRenamePrompt,
     onOpen,
-    importDocumentFiles,
+    importFiles,
     onGoUp,
 
+    importFilesPromptVisible,
+    setImportFilesPromptVisible,
     addFolderPromptVisible,
     setAddFolderPromptVisible,
     handleCreateFolderSubmit,
