@@ -7,7 +7,7 @@ import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { uploadFile } from "../utils/transferApi";
 import { getFilesInDirectory, ensureAppDirectory } from "../utils/fileUtils";
-import type { FileSystemEntry } from "../utils/fileUtils";
+import type { FileSystemEntry } from "../types/ExplorerTypes";
 import CurrentDirectoryPath from "./CurrentDirectoryPath";
 
 const APP_DIR_NAME = "Core/Files";

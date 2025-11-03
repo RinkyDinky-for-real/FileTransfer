@@ -3,7 +3,7 @@ import { View, Text, Button, Alert, Modal, FlatList, TouchableOpacity, ActivityI
 import { MaterialIcons } from "@expo/vector-icons";
 import { Directory, Paths } from "expo-file-system";
 import { getFilesInDirectory, ensureAppDirectory } from "../utils/fileUtils";
-import type { FileSystemEntry } from "../utils/fileUtils";
+import type { FileSystemEntry } from "../types/ExplorerTypes";
 import CurrentDirectoryPath from "./CurrentDirectoryPath";
 import AddFolderPrompt from "./AddFolderPrompt";
 import { getUniqueName } from "../utils/fileUtils";
