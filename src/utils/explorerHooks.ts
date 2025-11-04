@@ -99,7 +99,8 @@ export function useFileExplorer() {
   const handleSetCurrentFileName = async (fullFileName: string) => {
     const [name, extension] = fullFileName.split(".");
     setCurrentFileName(name);
-    setCurrentFileExtension(extension);
+    if (extension === undefined) setCurrentFileExtension("");
+    else setCurrentFileExtension(extension);
   };
 
   const handleRenameSubmit = async (newName: string) => {

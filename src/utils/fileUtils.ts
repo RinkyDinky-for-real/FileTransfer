@@ -89,7 +89,8 @@ export async function getUniqueName(
 
   let counter = 1;
   let [name, extension] = baseName.split(".");
-  if (extension !== "") extension = `.${extension}`;
+  if (extension !== undefined && extension !== "") extension = `.${extension}`;
+  else extension = "";
 
   let newName = `${name}(${counter})${extension}`;
   while (existingNames.includes(newName.toLowerCase())) {
