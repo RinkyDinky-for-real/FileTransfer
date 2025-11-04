@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, Button, Alert, TextInput } from "react-native";
+import { Alert, Button, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { downloadFile } from "../utils/transferApi";
-import SelectFilePrompt from "../components/SelectFilePrompt";
 import SelectDirectoryDowloadPrompt from "../components/SelectDirectoryDowloadPrompt";
+import SelectFilePrompt from "../components/SelectFilePrompt";
+import { downloadFile } from "../utils/transferApi";
 
 export default function TransferScreen() {
   const [pin, setPin] = useState<string | null>(null);
@@ -16,19 +16,25 @@ export default function TransferScreen() {
     setShowFilePicker(true);
   };
 
-const handleDownload = () => {
-  if (!downloadPin)
-    return Alert.alert("Error", "Enter a PIN");
+  const handleDownload = () => {
+    if (!downloadPin) return Alert.alert("Error", "Enter a PIN");
 
-  setShowDirectoryPicker(true);
-};
+    setShowDirectoryPicker(true);
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: 16 }}>
+    <SafeAreaView
+      edges={["left", "right", "bottom"]}
+      style={{ flex: 1, padding: 16 }}
+    >
       <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
         Upload a file
       </Text>
-      <Button title="Pick & Upload File" onPress={handlePickFile} disabled={loading} />
+      <Button
+        title="Pick & Upload File"
+        onPress={handlePickFile}
+        disabled={loading}
+      />
 
       {pin && (
         <Text style={{ marginTop: 12, fontSize: 16 }}>
@@ -53,7 +59,11 @@ const handleDownload = () => {
             marginVertical: 8,
           }}
         />
-        <Button title="Download File" onPress={handleDownload} disabled={loading} />
+        <Button
+          title="Download File"
+          onPress={handleDownload}
+          disabled={loading}
+        />
       </View>
 
       <SelectFilePrompt

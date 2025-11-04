@@ -52,7 +52,10 @@ export default function FileExplorer() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: 12 }}>
+    <SafeAreaView
+      edges={["left", "right", "bottom"]}
+      style={{ flex: 1, padding: 12 }}
+    >
       <ExplorerHeader
         query={query}
         setQuery={setQuery}
