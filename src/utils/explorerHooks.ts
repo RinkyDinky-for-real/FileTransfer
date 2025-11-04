@@ -27,6 +27,7 @@ export function useFileExplorer() {
   const [deletePromptVisible, setDeletePromptVisible] = useState(false);
 
   const [currentFileName, setCurrentFileName] = useState("");
+  const [currentFileExtension, setCurrentFileExtension] = useState("");
   const [targetUri, setTargetUri] = useState<string | null>(null);
 
   useEffect(() => {
@@ -95,19 +96,31 @@ export function useFileExplorer() {
     setDeletePromptVisible(false);
   };
 
+  const handleSetCurrentFileName = async (fullFileName: string) => {
+    const [name, extension] = fullFileName.split(".");
+    setCurrentFileName(name);
+    setCurrentFileExtension(extension);
+  };
+
   const handleRenameSubmit = async (newName: string) => {
-    if (newName && currentFileName !== newName && targetUri) {
-      const file = new Directory(currentDir, currentFileName);
-      try {
-        const uniqueName: string = await getUniqueName(file, newName);
-        if (uniqueName !== file.name) {
-          file.rename(uniqueName);
-          await refreshFiles();
-        }
-      } catch (e) {
-        console.error("Error renaming file", e);
-        Alert.alert("Error", "Could not rename file.");
+    if (newName.trim() === "" || currentFileName === newName || !targetUri)
+      return;
+    let file: File | Directory;
+    if (currentFileExtension === "") {
+      file = new Directory(currentDir, currentFileName);
+    } else {
+      file = new File(currentDir, `${currentFileName}.${currentFileExtension}`);
+      newName += `.${currentFileExtension}`;
+    }
+    try {
+      const uniqueName: string = await getUniqueName(file, newName);
+      if (uniqueName !== file.name) {
+        file.rename(uniqueName);
+        await refreshFiles();
       }
+    } catch (e) {
+      console.error("Error renaming file", e);
+      Alert.alert("Error", "Could not rename file.");
     }
     setRenamePromptVisible(false);
   };
@@ -171,7 +184,7 @@ export function useFileExplorer() {
   };
 
   const handleCreateFolderSubmit = async (name: string) => {
-    if (!name) return;
+    if (name.trim() === "") return;
     try {
       const uniqueName = await getUniqueName(currentDir, name, true);
       const dir = new Directory(currentDir, uniqueName);
@@ -222,7 +235,7 @@ export function useFileExplorer() {
     setDeletePromptVisible,
 
     currentFileName,
-    setCurrentFileName,
+    handleSetCurrentFileName,
     setTargetUri,
   };
 }

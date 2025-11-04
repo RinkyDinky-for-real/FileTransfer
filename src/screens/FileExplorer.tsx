@@ -39,7 +39,7 @@ export default function FileExplorer() {
     setDeletePromptVisible,
 
     currentFileName,
-    setCurrentFileName,
+    handleSetCurrentFileName,
     setTargetUri,
   } = useFileExplorer();
 
@@ -82,7 +82,7 @@ export default function FileExplorer() {
                   }}
                   onRename={() => {
                     setTargetUri(item.uri);
-                    setCurrentFileName(item.name);
+                    handleSetCurrentFileName(item.name);
                     setRenamePromptVisible(true);
                   }}
                   onExport={() => exportFile(item.uri)}
