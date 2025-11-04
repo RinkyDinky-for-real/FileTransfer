@@ -29,7 +29,11 @@ export default function FileItem({
       }}
     >
       <View style={{ width: 36 }}>
-        <MaterialIcons name={file.icon} size={28} />
+        <MaterialIcons
+          name={file.typeInfo.icon}
+          color={file.typeInfo.color}
+          size={28}
+        />
       </View>
 
       <View style={{ flex: 1 }}>

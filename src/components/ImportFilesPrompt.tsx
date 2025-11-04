@@ -20,11 +20,7 @@ export default function ImportFilesPrompt({
           <Text style={styles.modalTitle}>Import</Text>
           <Text style={styles.modalMessage}>Choose type:</Text>
           <View style={styles.modalButtonContainer}>
-            <Button
-              title="Files"
-              onPress={() => onSubmit("document")}
-              color="#888"
-            />
+            <Button title="Files" onPress={() => onSubmit("document")} />
             <Button title="Media" onPress={() => onSubmit("image")} />
           </View>
           <View style={styles.modalButtonContainer}>
