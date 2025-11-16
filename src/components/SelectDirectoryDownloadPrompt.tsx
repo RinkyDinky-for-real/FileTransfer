@@ -1,27 +1,26 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, Button, Alert, Modal, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Directory, Paths } from "expo-file-system";
-import { getFilesInDirectory, ensureAppDirectory } from "../utils/fileUtils";
+import React, { useCallback, useEffect, useState } from "react";
+import { Alert, Button, FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
 import type { FileSystemEntry } from "../types/ExplorerTypes";
-import CurrentDirectoryPath from "./CurrentDirectoryPath";
+import { ensureAppDirectory, getFilesInDirectory, getUniqueName } from "../utils/fileUtils";
 import AddFolderPrompt from "./AddFolderPrompt";
-import { getUniqueName } from "../utils/fileUtils";
+import CurrentDirectoryPath from "./CurrentDirectoryPath";
 
 const APP_DIR_NAME = "Core/Files";
 const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
 
-type SelectDirectoryDowloadPromptProps = {
+type SelectDirectoryDownloadPromptProps = {
   visible: boolean;
   onClose: () => void;
   onDownloadDirectoryPicked: (path: string) => void;
 };
 
-export default function SelectDirectoryDowloadPrompt({
+export default function SelectDirectoryDownloadPrompt({
   visible,
   onClose,
   onDownloadDirectoryPicked: onDownloadPicked,
-}: SelectDirectoryDowloadPromptProps) {
+}: SelectDirectoryDownloadPromptProps) {
   const [files, setFiles] = useState<FileSystemEntry[]>([]);
   const [currentDir, setCurrentDir] = useState<Directory | null>(null);
   const [addFolderPromptVisible, setAddFolderPromptVisible] = useState(false);

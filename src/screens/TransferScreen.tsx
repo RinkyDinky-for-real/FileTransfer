@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Button, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SelectDirectoryDowloadPrompt from "../components/SelectDirectoryDowloadPrompt";
+import SelectDirectoryDownloadPrompt from "../components/SelectDirectoryDownloadPrompt";
 import SelectFilePrompt from "../components/SelectFilePrompt";
 import { downloadFile } from "../utils/transferApi";
 
@@ -72,7 +72,7 @@ export default function TransferScreen() {
         onUploadSuccess={(pin) => setPin(pin)}
         onLoadingChange={setLoading}
       />
-      <SelectDirectoryDowloadPrompt
+      <SelectDirectoryDownloadPrompt
         visible={showDirectoryPicker}
         onClose={() => setShowDirectoryPicker(false)}
         onDownloadDirectoryPicked={async (path) => {
