@@ -85,7 +85,9 @@ export default function SelectDirectoryDownloadPrompt({
       try {
         const uniqueName = await getUniqueName(currentDir!, name, true);
         const dir = new Directory(currentDir!, uniqueName);
-        dir.create();
+        if (!dir.exists) {
+          dir.create();
+        }
         await refreshFiles();
       } catch (e) {
         console.error(e);
