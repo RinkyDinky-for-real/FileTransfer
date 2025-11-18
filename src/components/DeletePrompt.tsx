@@ -67,5 +67,6 @@ const styles = StyleSheet.create({
   modalButtonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
+    marginTop: 8,
   },
 });
