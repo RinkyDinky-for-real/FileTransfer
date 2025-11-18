@@ -58,6 +58,7 @@ export default function ExplorerHeader({
         placeholder="Search files..."
         value={query}
         onChangeText={setQuery}
+        returnKeyType="search"
         style={{
           borderWidth: 1,
           borderColor: "#ccc",
