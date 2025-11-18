@@ -97,10 +97,16 @@ export function useFileExplorer() {
   };
 
   const handleSetCurrentFileName = async (fullFileName: string) => {
-    const [name, extension] = fullFileName.split(".");
-    setCurrentFileName(name);
-    if (extension === undefined) setCurrentFileExtension("");
-    else setCurrentFileExtension(extension);
+    const parts = fullFileName.split(".");
+    if (parts.length === 1) {
+      setCurrentFileName(fullFileName);
+      setCurrentFileExtension("");
+    } else {
+      const extension = parts.pop()!;
+      const name = parts.join(".");
+      setCurrentFileName(name);
+      setCurrentFileExtension(extension);
+    }
   };
 
   const handleRenameSubmit = async (newName: string) => {
