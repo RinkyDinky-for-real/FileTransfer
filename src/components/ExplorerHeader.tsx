@@ -32,7 +32,7 @@ export default function ExplorerHeader({
             opacity: pressed ? 0.4 : 1,
           })}
         >
-          <MaterialIcons name="create-new-folder" size={24} />
+          <MaterialIcons name="create-new-folder" size={26} />
         </Pressable>
         <Pressable
           onPress={onImport}
@@ -41,7 +41,7 @@ export default function ExplorerHeader({
             opacity: pressed ? 0.4 : 1,
           })}
         >
-          <MaterialIcons name="add" size={24} />
+          <MaterialIcons name="add" size={26} />
         </Pressable>
         <Pressable
           onPress={onRefresh}
@@ -50,7 +50,7 @@ export default function ExplorerHeader({
             opacity: pressed ? 0.4 : 1,
           })}
         >
-          <MaterialIcons name="refresh" size={24} />
+          <MaterialIcons name="refresh" size={26} />
         </Pressable>
       </View>
 
