@@ -24,7 +24,7 @@ export default function TransferScreen() {
 
   return (
     <SafeAreaView
-      edges={["left", "right", "bottom"]}
+      edges={["top","left", "right", "bottom"]}
       style={{ flex: 1, padding: 16 }}
     >
       <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
@@ -70,7 +70,7 @@ export default function TransferScreen() {
         visible={showFilePicker}
         onClose={() => setShowFilePicker(false)}
         onUploadSuccess={(pin) => setPin(pin)}
-        onLoadingChange={setLoading}
+        setLoading={setLoading}
       />
       <SelectDirectoryDownloadPrompt
         visible={showDirectoryPicker}

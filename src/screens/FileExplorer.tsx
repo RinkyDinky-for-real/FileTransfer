@@ -53,7 +53,7 @@ export default function FileExplorer() {
 
   return (
     <SafeAreaView
-      edges={["left", "right", "bottom"]}
+      edges={["top","left", "right", "bottom"]}
       style={{ flex: 1, padding: 12 }}
     >
       <ExplorerHeader
