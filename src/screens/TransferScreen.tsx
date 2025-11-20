@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { Alert, Button, Text, TextInput, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, Button, Platform, Pressable, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SelectDirectoryDownloadPrompt from "../components/SelectDirectoryDownloadPrompt";
 import SelectFilePrompt from "../components/SelectFilePrompt";
 import { downloadFile } from "../utils/transferApi";
+import * as Clipboard from 'expo-clipboard';
+import Entypo from '@expo/vector-icons/Entypo';
 
 export default function TransferScreen() {
   const [pin, setPin] = useState<string | null>(null);
@@ -22,10 +24,18 @@ export default function TransferScreen() {
     setShowDirectoryPicker(true);
   };
 
+  const handleCopyPinToClipboard = async () => {
+    await Clipboard.setStringAsync(pin || "");
+  };
+  
+  useEffect(() => {
+    handleCopyPinToClipboard();
+  }, [pin]);
+
   return (
     <SafeAreaView
-      edges={["left", "right", "bottom"]}
-      style={{ flex: 1, padding: 16 }}
+      edges={Platform.OS === "ios" ? ["left", "right", "bottom"] : ["top","left", "right", "bottom"]}
+      style={{ flex: 1, padding: 12 }}
     >
       <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
         Upload a file
@@ -37,9 +47,15 @@ export default function TransferScreen() {
       />
 
       {pin && (
-        <Text style={{ marginTop: 12, fontSize: 16 }}>
-          Your current PIN: {pin}
-        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 16, gap: 4 }}>
+          <Text style={{ fontSize: 16 }}>
+            Your current PIN: 
+          </Text>
+          <Pressable style={{ flexDirection: "row", alignItems: "center"}} onPress={handleCopyPinToClipboard}>
+            <Text style={{ fontSize: 16, color: "blue" }}>{pin}</Text>
+            <Entypo name="clipboard" size={20} color="blue" />
+          </Pressable>
+        </View>
       )}
 
       <View style={{ marginTop: 32 }}>
@@ -70,7 +86,7 @@ export default function TransferScreen() {
         visible={showFilePicker}
         onClose={() => setShowFilePicker(false)}
         onUploadSuccess={(pin) => setPin(pin)}
-        onLoadingChange={setLoading}
+        setLoading={setLoading}
       />
       <SelectDirectoryDownloadPrompt
         visible={showDirectoryPicker}

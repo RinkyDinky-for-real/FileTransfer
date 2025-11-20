@@ -39,7 +39,7 @@ export default function FileItem({
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 16 }}>{file.name}</Text>
         <Text style={{ fontSize: 12, color: "#666" }}>
-          {file.size ? `${file.size} bytes` : ""}
+          {file.size ? `${(file.size / 1000000).toFixed(2)} MB` : ""}
         </Text>
       </View>
 

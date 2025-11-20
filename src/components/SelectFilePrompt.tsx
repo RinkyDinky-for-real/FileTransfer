@@ -16,18 +16,17 @@ type SelectFilePromptProps = {
   visible: boolean;
   onClose: () => void;
   onUploadSuccess?: (pin: string) => void;
-  onLoadingChange?: (loading: boolean) => void;
+  setLoading: (loading: boolean) => void;
 };
 
 export default function SelectFilePrompt({
   visible,
   onClose,
   onUploadSuccess,
-  onLoadingChange,
+  setLoading,
 }: SelectFilePromptProps) {
   const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
   const [files, setFiles] = useState<FileSystemEntry[]>([]);
-  const [loadingFiles, setLoadingFiles] = useState(false);
   const [currentDir, setCurrentDir] = useState<Directory | null>(null);
 
   useEffect(() => {
@@ -47,7 +46,6 @@ export default function SelectFilePrompt({
 
   const refreshFiles = useCallback(async () => {
     if (!currentDir) return;
-    setLoadingFiles(true);
     try {
       await ensureAppDirectory(APP_DIR_NAME);
       const list = await getFilesInDirectory(currentDir);
@@ -55,8 +53,6 @@ export default function SelectFilePrompt({
     } catch (e) {
       console.error("Error reading files", e);
       Alert.alert("Error", "Could not read files.");
-    } finally {
-      setLoadingFiles(false);
     }
   }, [currentDir]);
 
@@ -89,7 +85,7 @@ export default function SelectFilePrompt({
 
   const handleSelectFile = async (file: FileSystemEntry) => {
     onClose();
-    if (onLoadingChange) onLoadingChange(true);
+    setLoading(true);
     try {
       const response = await uploadFile(file.uri, file.name);
       if (onUploadSuccess) onUploadSuccess(response.pin);
@@ -97,7 +93,7 @@ export default function SelectFilePrompt({
     } catch (err: any) {
       Alert.alert("Error", err.message);
     } finally {
-      if (onLoadingChange) onLoadingChange(false);
+      setLoading(false);
     }
   };
 
@@ -108,14 +104,14 @@ export default function SelectFilePrompt({
       if (!result.assets || result.assets.length === 0) return;
 
       const file = result.assets[0];
-      if (onLoadingChange) onLoadingChange(true);
+      setLoading(true);
       const response = await uploadFile(file.uri, file.name);
       if (onUploadSuccess) onUploadSuccess(response.pin);
-      Alert.alert("Success", `Your file PIN: ${response.pin}`);
+      Alert.alert("Success", `PIN copied to clipboard: ${response.pin}`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     } finally {
-      if (onLoadingChange) onLoadingChange(false);
+      setLoading(false);
     }
   };
 
@@ -137,14 +133,14 @@ export default function SelectFilePrompt({
         fileName = file.fileName || `image_${Date.now()}.${extension}`;
       } else throw new Error("Invalid media file");
 
-      if (onLoadingChange) onLoadingChange(true);
+      setLoading(true);
       const response = await uploadFile(file.uri, fileName);
       if (onUploadSuccess) onUploadSuccess(response.pin);
-      Alert.alert("Success", `Your file PIN: ${response.pin}`);
+      Alert.alert("Success", `PIN copied to clipboard: ${response.pin}`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     } finally {
-      if (onLoadingChange) onLoadingChange(false);
+      setLoading(false);
     }
   };
 
@@ -180,11 +176,7 @@ export default function SelectFilePrompt({
           />
         )}
 
-        {loadingFiles ? (
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <ActivityIndicator size="large" />
-          </View>
-        ) : files.length === 0 ? (
+        {files.length === 0 ? (
           <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap:"8"}}>
             <Text style={{ fontSize: 16, color: "#666", marginBottom: 16 }}>
               No files found in this directory

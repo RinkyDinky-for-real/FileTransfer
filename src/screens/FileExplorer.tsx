@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import { Platform, ActivityIndicator, FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddFolderPrompt from "../components/AddFolderPrompt";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
@@ -53,7 +53,7 @@ export default function FileExplorer() {
 
   return (
     <SafeAreaView
-      edges={["left", "right", "bottom"]}
+      edges={Platform.OS === "ios" ? ["left", "right", "bottom"] : ["top","left", "right", "bottom"]}
       style={{ flex: 1, padding: 12 }}
     >
       <ExplorerHeader
