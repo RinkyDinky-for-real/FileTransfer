@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Button, Platform, Pressable, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SelectDirectoryDownloadPrompt from "../components/SelectDirectoryDownloadPrompt";
 import SelectFilePrompt from "../components/SelectFilePrompt";
@@ -34,8 +34,8 @@ export default function TransferScreen() {
 
   return (
     <SafeAreaView
-      edges={["top","left", "right", "bottom"]}
-      style={{ flex: 1, padding: 16 }}
+      edges={Platform.OS === "ios" ? ["left", "right", "bottom"] : ["top","left", "right", "bottom"]}
+      style={{ flex: 1, padding: 12 }}
     >
       <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
         Upload a file
