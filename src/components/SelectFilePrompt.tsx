@@ -107,7 +107,7 @@ export default function SelectFilePrompt({
       setLoading(true);
       const response = await uploadFile(file.uri, file.name);
       if (onUploadSuccess) onUploadSuccess(response.pin);
-      Alert.alert("Success", `Your file PIN: ${response.pin}`);
+      Alert.alert("Success", `PIN copied to clipboard: ${response.pin}`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     } finally {
@@ -136,7 +136,7 @@ export default function SelectFilePrompt({
       setLoading(true);
       const response = await uploadFile(file.uri, fileName);
       if (onUploadSuccess) onUploadSuccess(response.pin);
-      Alert.alert("Success", `Your file PIN: ${response.pin}`);
+      Alert.alert("Success", `PIN copied to clipboard: ${response.pin}`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     } finally {
