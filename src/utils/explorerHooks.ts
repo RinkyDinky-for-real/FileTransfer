@@ -3,7 +3,7 @@ import { Directory, File, Paths } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
 import { useCallback, useEffect, useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 import type { FileCategory, FileSystemEntry } from "../types/ExplorerTypes";
 import {
   ensureAppDirectory,
@@ -64,19 +64,25 @@ export function useFileExplorer() {
   const exportFile = async (fileUri: string) => {
     if (fileUri === "") return;
     try {
-      Paths.cache.list().forEach((file) => {
-        file.delete();
-      });
-      const isAvailable = await Sharing.isAvailableAsync();
-      if (!isAvailable) return;
+      if (Platform.OS === 'ios') {
+        Paths.cache.list().forEach((file) => {
+          file.delete();
+        });
+        const isAvailable = await Sharing.isAvailableAsync();
+        if (!isAvailable) return;
 
-      const file = new File(fileUri);
-      file.copy(Paths.cache);
+        const file = new File(fileUri);
+        file.copy(Paths.cache);
 
-      const copyfile = new File(Paths.cache, file.name);
+        const copyfile = new File(Paths.cache, file.name);
 
-      await Sharing.shareAsync(copyfile.uri);
-      copyfile.delete();
+        await Sharing.shareAsync(copyfile.uri);
+        copyfile.delete();
+      } else {
+        const isAvailable = await Sharing.isAvailableAsync();
+        if (!isAvailable) return;
+        await Sharing.shareAsync(fileUri);
+      }
     } catch (e) {
       console.error("Error exporting file", e);
       Alert.alert("Error", "Could not export file.");
