@@ -25,6 +25,7 @@ export default function TransferScreen() {
   };
 
   const handleCopyPinToClipboard = async () => {
+    if (pin === null) return;
     await Clipboard.setStringAsync(pin || "");
   };
   
