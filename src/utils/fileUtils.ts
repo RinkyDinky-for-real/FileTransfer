@@ -126,5 +126,4 @@ export async function moveFile(fileUri: string, destinationUri: string) {
   } catch (error) {
     console.error('Error moving file:', error);
   }
-
 }

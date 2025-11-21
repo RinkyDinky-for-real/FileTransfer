@@ -10,17 +10,17 @@ import CurrentDirectoryPath from "./CurrentDirectoryPath";
 const APP_DIR_NAME = "Core/Files";
 const APP_DIR = new Directory(Paths.document, APP_DIR_NAME);
 
-type SelectDirectoryDownloadPromptProps = {
+type SelectDirectoryPromptProps = {
   visible: boolean;
   onClose: () => void;
-  onDownloadDirectoryPicked: (path: string) => void;
+  onDirectoryPicked: (path: string) => void;
 };
 
-export default function SelectDirectoryDownloadPrompt({
+export default function SelectDirectoryPrompt({
   visible,
   onClose,
-  onDownloadDirectoryPicked: onDownloadPicked,
-}: SelectDirectoryDownloadPromptProps) {
+  onDirectoryPicked,
+}: SelectDirectoryPromptProps) {
   const [files, setFiles] = useState<FileSystemEntry[]>([]);
   const [currentDir, setCurrentDir] = useState<Directory | null>(null);
   const [addFolderPromptVisible, setAddFolderPromptVisible] = useState(false);
@@ -125,7 +125,7 @@ export default function SelectDirectoryDownloadPrompt({
                     <Button title="Add directory?" onPress={() => setAddFolderPromptVisible(true)} />
                 </View>
                 <View style={{ gap: 8 }}>
-                    <Button title={`Download to "${currentDir?.name}"`} onPress={() => onDownloadPicked(currentDir?.uri!)} />
+                    <Button title={`Download to "${currentDir?.name}"`} onPress={() => onDirectoryPicked(currentDir?.uri!)} />
                 </View>
             </>
         ) : (
@@ -164,7 +164,7 @@ export default function SelectDirectoryDownloadPrompt({
               )}
             />
             <View style={{ gap: 8 }}>
-              <Button title={`Download to "${currentDir?.name}"`} onPress={() => onDownloadPicked(currentDir?.uri!)} />
+              <Button title={`Download to "${currentDir?.name}"`} onPress={() => onDirectoryPicked(currentDir?.uri!)} />
             </View>
           </>
         )}

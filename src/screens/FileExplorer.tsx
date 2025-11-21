@@ -10,7 +10,7 @@ import ImportFilesPrompt from "../components/ImportFilesPrompt";
 import RenamePrompt from "../components/RenamePrompt";
 import type { FileSystemEntry } from "../types/ExplorerTypes";
 import { useFileExplorer } from "../utils/explorerHooks";
-import SelectDirectoryDownloadPrompt from "../components/SelectDirectoryDownloadPrompt";
+import SelectDirectoryPrompt from "../components/SelectDirectoryPrompt";
 import { moveFile } from "../utils/fileUtils";
 
 export default function FileExplorer() {
@@ -130,10 +130,10 @@ export default function FileExplorer() {
         onSubmit={handleDeleteSubmit}
       />
 
-      <SelectDirectoryDownloadPrompt
+      <SelectDirectoryPrompt
         visible={showDirectoryPicker}
         onClose={() => setShowDirectoryPicker(false)}
-        onDownloadDirectoryPicked={async (path) => {
+        onDirectoryPicked={async (path) => {
           setShowDirectoryPicker(false);
           try {
             await moveFile(longPressedFile!, path);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Button, Platform, Pressable, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SelectDirectoryDownloadPrompt from "../components/SelectDirectoryDownloadPrompt";
+import SelectDirectoryPrompt from "../components/SelectDirectoryPrompt";
 import SelectFilePrompt from "../components/SelectFilePrompt";
 import { downloadFile } from "../utils/transferApi";
 import * as Clipboard from 'expo-clipboard';
@@ -89,10 +89,10 @@ export default function TransferScreen() {
         onUploadSuccess={(pin) => setPin(pin)}
         setLoading={setLoading}
       />
-      <SelectDirectoryDownloadPrompt
+      <SelectDirectoryPrompt
         visible={showDirectoryPicker}
         onClose={() => setShowDirectoryPicker(false)}
-        onDownloadDirectoryPicked={async (path) => {
+        onDirectoryPicked={async (path) => {
           setShowDirectoryPicker(false);
           try {
             setLoading(true);
