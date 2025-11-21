@@ -18,8 +18,8 @@ export default function ImportFilesPrompt({
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Import</Text>
-          <Button title="Import Files" onPress={() => onSubmit("document")} />
-          <Button title="Import Media" onPress={() => onSubmit("image")} />
+          <Button title="Add Files" onPress={() => onSubmit("document")} />
+          <Button title="Add Media" onPress={() => onSubmit("image")} />
           <View style={styles.modalButtonContainer}>
             <Button title="Cancel" onPress={() => onCancel()} color="#888" />
           </View>

@@ -9,6 +9,7 @@ import {
   ensureAppDirectory,
   getFilesInDirectory,
   getUniqueName,
+  moveFile,
   recursiveDeleteDirectory,
 } from "./fileUtils";
 
@@ -21,8 +22,7 @@ export function useFileExplorer() {
   const [query, setQuery] = useState<string>("");
   const [currentDir, setCurrentDir] = useState<Directory>(APP_DIR);
 
-  const [importFilesPromptVisible, setImportFilesPromptVisible] =
-    useState(false);
+  const [importFilesPromptVisible, setImportFilesPromptVisible] = useState(false);
   const [addFolderPromptVisible, setAddFolderPromptVisible] = useState(false);
   const [renamePromptVisible, setRenamePromptVisible] = useState(false);
   const [deletePromptVisible, setDeletePromptVisible] = useState(false);
@@ -30,6 +30,8 @@ export function useFileExplorer() {
   const [currentFileName, setCurrentFileName] = useState("");
   const [currentFileExtension, setCurrentFileExtension] = useState("");
   const [targetUri, setTargetUri] = useState<string | null>(null);
+  const [showDirectoryPicker, setShowDirectoryPicker] = useState(false);
+  const [longPressedFile, setLongPressedFile] = useState<string | null>(null);
 
   useEffect(() => {
     async function setup() {
@@ -160,6 +162,24 @@ export function useFileExplorer() {
     }
   };
 
+  const onLongPress = async (fileUri: string) => {
+    const { exists, isDirectory } = Paths.info(fileUri);
+    if (!exists || isDirectory) return;
+    Alert.alert("Move File", "Do you want to relocate this file?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Move",
+        onPress: () => {
+          setShowDirectoryPicker(true);
+          setLongPressedFile(fileUri);
+        },
+      },
+    ]);
+  };
+
   const importFiles = async (fileType: FileCategory) => {
     try {
       let result:
@@ -242,6 +262,7 @@ export function useFileExplorer() {
     setQuery,
     refreshFiles,
     onOpen,
+    onLongPress,
     importFiles,
     exportFile,
     onGoUp,
@@ -257,6 +278,9 @@ export function useFileExplorer() {
     deletePromptVisible,
     handleDeleteSubmit,
     setDeletePromptVisible,
+    setShowDirectoryPicker,
+    showDirectoryPicker,
+    longPressedFile,
 
     currentFileName,
     handleSetCurrentFileName,

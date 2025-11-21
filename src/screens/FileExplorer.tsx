@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, ActivityIndicator, FlatList, View } from "react-native";
+import { Platform, ActivityIndicator, FlatList, View, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddFolderPrompt from "../components/AddFolderPrompt";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
@@ -10,6 +10,8 @@ import ImportFilesPrompt from "../components/ImportFilesPrompt";
 import RenamePrompt from "../components/RenamePrompt";
 import type { FileSystemEntry } from "../types/ExplorerTypes";
 import { useFileExplorer } from "../utils/explorerHooks";
+import SelectDirectoryDownloadPrompt from "../components/SelectDirectoryDownloadPrompt";
+import { moveFile } from "../utils/fileUtils";
 
 export default function FileExplorer() {
   const {
@@ -22,6 +24,7 @@ export default function FileExplorer() {
     setQuery,
     refreshFiles,
     onOpen,
+    onLongPress,
     importFiles,
     exportFile,
     onGoUp,
@@ -37,11 +40,15 @@ export default function FileExplorer() {
     deletePromptVisible,
     handleDeleteSubmit,
     setDeletePromptVisible,
+    setShowDirectoryPicker,
+    showDirectoryPicker,
+    longPressedFile,
 
     currentFileName,
     handleSetCurrentFileName,
     setTargetUri,
   } = useFileExplorer();
+
 
   if (!currentDir.exists) {
     return (
@@ -90,6 +97,7 @@ export default function FileExplorer() {
                   }}
                   onExport={() => exportFile(item.uri)}
                   onOpen={() => onOpen(item.uri)}
+                  onLongPress={() => onLongPress(item.uri)}
                 />
               )}
             />
@@ -120,6 +128,22 @@ export default function FileExplorer() {
         visible={deletePromptVisible}
         onCancel={() => setDeletePromptVisible(false)}
         onSubmit={handleDeleteSubmit}
+      />
+
+      <SelectDirectoryDownloadPrompt
+        visible={showDirectoryPicker}
+        onClose={() => setShowDirectoryPicker(false)}
+        onDownloadDirectoryPicked={async (path) => {
+          setShowDirectoryPicker(false);
+          try {
+            await moveFile(longPressedFile!, path);
+            await refreshFiles();
+
+            Alert.alert("Moved file", `File moved to: ${path}`);
+          } catch (err: any) {
+            Alert.alert("Error", err.message);
+          } 
+        }}
       />
     </SafeAreaView>
   );

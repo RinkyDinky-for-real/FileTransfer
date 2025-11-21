@@ -1,5 +1,6 @@
 import { Directory, File, Paths } from "expo-file-system";
 import { FileTypeInfo, FileTypes } from "../types/ExplorerTypes";
+import * as FileSystem from "expo-file-system/legacy";
 
 export async function ensureAppDirectory(path: string) {
   try {
@@ -111,4 +112,19 @@ export async function recursiveDeleteDirectory(dir: Directory) {
     }
   }
   dir.delete();
+}
+
+export async function moveFile(fileUri: string, destinationUri: string) {
+  try {
+    const fileName = fileUri.split('/').pop();
+    const destinationPath = `${destinationUri}/${fileName}`;
+    await FileSystem.moveAsync({
+      from: fileUri,
+      to: destinationPath,
+    });
+    console.log('File moved successfully!');
+  } catch (error) {
+    console.error('Error moving file:', error);
+  }
+
 }

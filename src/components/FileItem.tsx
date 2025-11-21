@@ -8,6 +8,7 @@ interface FileItemProps {
   onRename: () => void;
   onExport: () => void;
   onOpen: () => void;
+  onLongPress: () => void;
 }
 
 export default function FileItem({
@@ -16,10 +17,12 @@ export default function FileItem({
   onRename,
   onExport,
   onOpen,
+  onLongPress,
 }: FileItemProps) {
   return (
     <TouchableOpacity
       onPress={onOpen}
+      onLongPress={onLongPress}
       style={{
         padding: 12,
         flexDirection: "row",
