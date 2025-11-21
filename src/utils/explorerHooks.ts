@@ -195,6 +195,7 @@ export function useFileExplorer() {
         newFile.rename(uniqueName);
         newFile.move(currentDir);
 
+        Alert.alert("Success", "File(s) imported.");
         await refreshFiles();
       });
     } catch (e) {
