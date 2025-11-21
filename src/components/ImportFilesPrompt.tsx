@@ -14,15 +14,12 @@ export default function ImportFilesPrompt({
   onSubmit,
 }: ImportFilesPromptProps) {
   return (
-    <Modal transparent visible={visible} onRequestClose={() => onCancel}>
+    <Modal transparent visible={visible} onRequestClose={() => onCancel()}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Import</Text>
-          <Text style={styles.modalMessage}>Choose type:</Text>
-          <View style={styles.modalButtonContainer}>
-            <Button title="Files" onPress={() => onSubmit("document")} />
-            <Button title="Media" onPress={() => onSubmit("image")} />
-          </View>
+          <Button title="Import Files" onPress={() => onSubmit("document")} />
+          <Button title="Import Media" onPress={() => onSubmit("image")} />
           <View style={styles.modalButtonContainer}>
             <Button title="Cancel" onPress={() => onCancel()} color="#888" />
           </View>
@@ -44,24 +41,16 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     width: "80%",
+    gap: 5,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 10,
-  },
-  modalMessage: {
-    marginBottom: 10,
-  },
-  modalInput: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
+    marginBottom: 5,
   },
   modalButtonContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-evenly",
+    marginTop: 10,
   },
 });
