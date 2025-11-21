@@ -100,3 +100,15 @@ export async function getUniqueName(
 
   return newName;
 }
+
+export async function recursiveDeleteDirectory(dir: Directory) {
+  const entries = await dir.list();
+  for (const entry of entries) {
+    if (entry instanceof File) {
+      entry.delete();
+    } else if (entry instanceof Directory) {
+      await recursiveDeleteDirectory(entry);
+    }
+  }
+  dir.delete();
+}

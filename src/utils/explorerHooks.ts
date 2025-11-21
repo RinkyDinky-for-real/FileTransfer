@@ -9,6 +9,7 @@ import {
   ensureAppDirectory,
   getFilesInDirectory,
   getUniqueName,
+  recursiveDeleteDirectory,
 } from "./fileUtils";
 
 const APP_DIR_NAME = "Core/Files";
@@ -96,8 +97,15 @@ export function useFileExplorer() {
       file.delete();
       await refreshFiles();
     } catch (e) {
-      console.error("Error deleting file", e);
-      Alert.alert("Error", "Could not delete file.");
+      try {
+        const dir = new Directory(targetUri);
+        await recursiveDeleteDirectory(dir);
+        await refreshFiles();
+      } catch (recursiveError) {
+        console.error("Error deleting file", e);
+        console.error("Error recursively deleting file", recursiveError);
+        Alert.alert("Error", "Could not delete file.");
+      }
     }
     setDeletePromptVisible(false);
   };
