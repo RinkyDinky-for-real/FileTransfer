@@ -1,6 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 import type { FileSystemEntry } from "../types/ExplorerTypes";
+import { formatFileSize } from "../utils/fileUtils";
 
 interface FileItemProps {
   file: FileSystemEntry;
@@ -42,7 +43,7 @@ export default function FileItem({
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 16 }}>{file.name}</Text>
         <Text style={{ fontSize: 12, color: "#666" }}>
-          {file.size ? `${(file.size / 1000000).toFixed(2)} MB` : ""}
+          {file.size ? formatFileSize(file.size) : ""}
         </Text>
       </View>
 
