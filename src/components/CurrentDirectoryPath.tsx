@@ -7,12 +7,14 @@ type CurrentDirectoryPathProps = {
   path: string;
   canGoUp?: boolean;
   onGoUp?: () => void;
+  fileCount?: number;
 };
 
 export default function CurrentDirectoryPath({
   path,
   canGoUp = false,
   onGoUp,
+  fileCount,
 }: CurrentDirectoryPathProps) {
   const MAX_SEGMENTS = 3;
 
@@ -25,7 +27,7 @@ export default function CurrentDirectoryPath({
   const lastIndex = displaySegments.length - 1;
 
   return (
-    <View style={{ flexDirection: "row", paddingBottom: 4, paddingLeft: 4 }}>
+    <View style={{ flexDirection: "row", paddingBottom: 4, paddingLeft: 4, alignItems: "center" }}>
       {canGoUp && (
         <Pressable
           onPress={onGoUp}
@@ -56,6 +58,12 @@ export default function CurrentDirectoryPath({
           </Text>
         ))}
       </Text>
+
+      {fileCount !== undefined && (
+        <Text style={{ fontSize: 12, color: '#686868ff', marginLeft: 8 }}>
+          ({fileCount} {fileCount === 1 ? 'item' : 'items'})
+        </Text>
+      )}
     </View>
   );
 }
