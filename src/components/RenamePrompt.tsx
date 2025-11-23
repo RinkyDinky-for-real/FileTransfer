@@ -33,7 +33,7 @@ export default function RenamePrompt({
   };
 
   return (
-    <Modal transparent visible={visible} onRequestClose={handlePressCancel}>
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={handlePressCancel}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Rename</Text>

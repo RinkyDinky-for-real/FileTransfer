@@ -21,7 +21,7 @@ export default function DeletePrompt({
   };
 
   return (
-    <Modal transparent visible={visible} onRequestClose={handlePressCancel}>
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={handlePressCancel}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Delete</Text>

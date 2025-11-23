@@ -14,7 +14,7 @@ export default function ImportFilesPrompt({
   onSubmit,
 }: ImportFilesPromptProps) {
   return (
-    <Modal transparent visible={visible} onRequestClose={() => onCancel()}>
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={() => onCancel()}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Import</Text>
