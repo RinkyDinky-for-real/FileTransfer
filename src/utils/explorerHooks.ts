@@ -234,6 +234,7 @@ export function useFileExplorer() {
         dir.create();
       }
       await refreshFiles();
+      Alert.alert("Success", `Folder "${uniqueName}" created`);
     } catch (e) {
       console.error(e);
       Alert.alert("Error", "Could not create folder.");
