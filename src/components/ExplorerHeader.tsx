@@ -54,20 +54,36 @@ export default function ExplorerHeader({
         </Pressable>
       </View>
 
-      <TextInput
-        placeholder="Search files..."
-        placeholderTextColor="#979797ff"
-        value={query}
-        onChangeText={setQuery}
-        returnKeyType="search"
-        style={{
-          borderWidth: 1,
-          borderColor: "#ccc",
-          borderRadius: 8,
-          paddingHorizontal: 10,
-          paddingVertical: 8,
-        }}
-      />
+      <View style={{ position: 'relative' }}>
+        <TextInput
+          placeholder="Search files..."
+          placeholderTextColor="#979797ff"
+          value={query}
+          onChangeText={setQuery}
+          returnKeyType="search"
+          style={{
+            borderWidth: 1,
+            borderColor: "#ccc",
+            borderRadius: 8,
+            paddingHorizontal: 10,
+            paddingVertical: 8,
+            paddingRight: query ? 35 : 10,
+          }}
+        />
+        {query.length > 0 && (
+          <Pressable
+            onPress={() => setQuery("")}
+            style={{
+              position: 'absolute',
+              right: 8,
+              top: 4,
+              padding: 4,
+            }}
+          >
+            <MaterialIcons name="clear" size={20} color="#686868ff" />
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }
