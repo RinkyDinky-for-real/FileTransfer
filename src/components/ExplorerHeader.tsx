@@ -56,6 +56,7 @@ export default function ExplorerHeader({
 
       <TextInput
         placeholder="Search files..."
+        placeholderTextColor="#979797ff"
         value={query}
         onChangeText={setQuery}
         returnKeyType="search"
