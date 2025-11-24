@@ -30,6 +30,10 @@ export default function FileItem({
         alignItems: "center",
         borderBottomWidth: 1,
         borderColor: "#eee",
+        backgroundColor: '#fff',
+        marginHorizontal: 4,
+        marginVertical: 2,
+        borderRadius: 8,
       }}
     >
       <View style={{ width: 36 }}>
