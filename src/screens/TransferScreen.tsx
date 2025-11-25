@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Platform, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Button, Platform, Pressable, Text, TextInput, View, TouchableWithoutFeedback, Keyboard, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SelectDirectoryPrompt from "../components/SelectDirectoryPrompt";
 import SelectFilePrompt from "../components/SelectFilePrompt";
@@ -38,50 +38,54 @@ export default function TransferScreen() {
       edges={Platform.OS === "ios" ? ["left", "right", "bottom"] : ["top","left", "right", "bottom"]}
       style={{ flex: 1, padding: 12 }}
     >
-      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
-        Upload a file
-      </Text>
-      <Button
-        title="Pick & Upload File"
-        onPress={handlePickFile}
-        disabled={loading}
-      />
-
-      {pin && (
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 16, gap: 4 }}>
-          <Text style={{ fontSize: 16 }}>
-            Your current PIN: 
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
+            Upload a file
           </Text>
-          <Pressable style={{ flexDirection: "row", alignItems: "center"}} onPress={handleCopyPinToClipboard}>
-            <Text style={{ fontSize: 16, color: "blue" }}>{pin}</Text>
-            <Entypo name="clipboard" size={20} color="blue" />
-          </Pressable>
-        </View>
-      )}
+          <Button
+            title="Pick & Upload File"
+            onPress={handlePickFile}
+            disabled={loading}
+          />
 
-      <View style={{ marginTop: 32 }}>
-        <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
-          Download a file
-        </Text>
-        <Text>Enter PIN:</Text>
-        <TextInput
-          placeholder="PIN"
-          value={downloadPin}
-          onChangeText={setDownloadPin}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            borderRadius: 6,
-            padding: 8,
-            marginVertical: 8,
-          }}
-        />
-        <Button
-          title="Download File"
-          onPress={handleDownload}
-          disabled={loading}
-        />
-      </View>
+          {pin && (
+            <View style={{ flexDirection: "row", alignItems: "center", marginTop: 16, gap: 4 }}>
+              <Text style={{ fontSize: 16 }}>
+                Your current PIN: 
+              </Text>
+              <Pressable style={{ flexDirection: "row", alignItems: "center"}} onPress={handleCopyPinToClipboard}>
+                <Text style={{ fontSize: 16, color: "blue" }}>{pin}</Text>
+                <Entypo name="clipboard" size={20} color="blue" />
+              </Pressable>
+            </View>
+          )}
+
+          <View style={{ marginTop: 32 }}>
+            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 12 }}>
+              Download a file
+            </Text>
+            <Text>Enter PIN:</Text>
+            <TextInput
+              placeholder="PIN"
+              value={downloadPin}
+              onChangeText={setDownloadPin}
+              style={{
+                borderWidth: 1,
+                borderColor: "#ccc",
+                borderRadius: 6,
+                padding: 8,
+                marginVertical: 8,
+              }}
+            />
+            <Button
+              title="Download File"
+              onPress={handleDownload}
+              disabled={loading}
+            />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
 
       <SelectFilePrompt
         visible={showFilePicker}
