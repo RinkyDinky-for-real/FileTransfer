@@ -70,6 +70,8 @@ export default function TransferScreen() {
               placeholder="PIN"
               value={downloadPin}
               onChangeText={setDownloadPin}
+              keyboardType="number-pad"
+              maxLength={6}
               style={{
                 borderWidth: 1,
                 borderColor: "#ccc",
