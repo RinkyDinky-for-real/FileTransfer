@@ -43,6 +43,7 @@ export default function RenamePrompt({
             onChangeText={setInputValue}
             value={inputValue}
             placeholder="New name"
+            autoFocus={true}
           />
           <View style={styles.modalButtonContainer}>
             <Button title="Cancel" onPress={handlePressCancel} color="#888" />

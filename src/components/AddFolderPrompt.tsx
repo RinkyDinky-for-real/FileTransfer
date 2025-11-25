@@ -36,6 +36,7 @@ export default function AddfolderPrompt({
             value={inputValue}
             placeholder="Folder name"
             placeholderTextColor="#979797ff"
+            autoFocus={true}
           />
           <View style={styles.modalButtonContainer}>
             <Button title="Cancel" onPress={handlePressCancel} color="#888" />
