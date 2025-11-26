@@ -181,6 +181,7 @@ export function useFileExplorer() {
   };
 
   const importFiles = async (fileType: FileCategory) => {
+    setLoading(true);
     try {
       let result:
         | DocumentPicker.DocumentPickerResult
@@ -221,8 +222,10 @@ export function useFileExplorer() {
     } catch (e) {
       console.error(e);
       Alert.alert("Error", "Could not import document files.");
+    } finally {
+      setLoading(false);
+      setImportFilesPromptVisible(false);
     }
-    setImportFilesPromptVisible(false);
   };
 
   const handleCreateFolderSubmit = async (name: string) => {
