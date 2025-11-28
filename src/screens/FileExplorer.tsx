@@ -72,7 +72,7 @@ export default function FileExplorer() {
       />
       <View style={{ flex: 1 }}>
         <CurrentDirectoryPath
-          path={`${APP_DIR_NAME}/${currentDir.uri.replace(APP_DIR.uri, "")}`}
+          path={`Files/${currentDir.uri.replace(APP_DIR.uri, "")}`}
           canGoUp={currentDir.uri !== APP_DIR.uri}
           onGoUp={onGoUp}
           fileCount={filteredFiles.length}
