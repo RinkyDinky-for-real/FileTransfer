@@ -105,7 +105,7 @@ export default function SelectDirectoryPrompt({
     >
       <View style={{ flex: 1, padding: 16 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Download file to...</Text>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Send file to...</Text>
           <TouchableOpacity onPress={onClose}>
             <MaterialIcons name="close" size={28} />
           </TouchableOpacity>
@@ -125,7 +125,7 @@ export default function SelectDirectoryPrompt({
                     <Button title="Add directory?" onPress={() => setAddFolderPromptVisible(true)} />
                 </View>
                 <View style={{ gap: 8 }}>
-                    <Button title={`Download to "${currentDir?.name}"`} onPress={() => onDirectoryPicked(currentDir?.uri!)} />
+                    <Button title={`Send to "${currentDir?.name}"`} onPress={() => onDirectoryPicked(currentDir?.uri!)} />
                 </View>
             </>
         ) : (
@@ -164,7 +164,7 @@ export default function SelectDirectoryPrompt({
               )}
             />
             <View style={{ gap: 8 }}>
-              <Button title={`Download to "${currentDir?.name}"`} onPress={() => onDirectoryPicked(currentDir?.uri!)} />
+              <Button title={`Send to "${currentDir?.name}"`} onPress={() => onDirectoryPicked(currentDir?.uri!)} />
             </View>
           </>
         )}

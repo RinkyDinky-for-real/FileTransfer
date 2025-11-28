@@ -24,10 +24,7 @@ export async function downloadFile(pin: string, downloadPath: string) {
     const downloadURL = await downloadFileFromAppwrite(pin); //res.arrayBuffer();
 
     let filename = fileData.name;
-    console.log("Original filename from server:", filename);
-
     const destinationDir = new Directory(Paths.document, APP_DIR_NAME + downloadPath);
-    console.log("Saving to", destinationDir);
 
     filename = await getUniqueName(destinationDir, filename, true)
     const destinationFile = new File(destinationDir, filename)
