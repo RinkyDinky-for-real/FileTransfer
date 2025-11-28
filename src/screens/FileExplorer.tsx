@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, ActivityIndicator, FlatList, View, Alert } from "react-native";
+import { ActivityIndicator, Alert, FlatList, Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddFolderPrompt from "../components/AddFolderPrompt";
 import CurrentDirectoryPath from "../components/CurrentDirectoryPath";
@@ -8,9 +8,9 @@ import ExplorerHeader from "../components/ExplorerHeader";
 import FileItem from "../components/FileItem";
 import ImportFilesPrompt from "../components/ImportFilesPrompt";
 import RenamePrompt from "../components/RenamePrompt";
+import SelectDirectoryPrompt from "../components/SelectDirectoryPrompt";
 import type { FileSystemEntry } from "../types/ExplorerTypes";
 import { useFileExplorer } from "../utils/explorerHooks";
-import SelectDirectoryPrompt from "../components/SelectDirectoryPrompt";
 import { moveFile } from "../utils/fileUtils";
 
 export default function FileExplorer() {
