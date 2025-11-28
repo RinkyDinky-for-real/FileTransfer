@@ -1,7 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Directory, Paths } from "expo-file-system";
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, Button, FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Button, FlatList, Modal, Platform, Text, TouchableOpacity, View } from "react-native";
 import type { FileSystemEntry } from "../types/ExplorerTypes";
 import { ensureAppDirectory, getFilesInDirectory, getUniqueName } from "../utils/fileUtils";
 import AddFolderPrompt from "./AddFolderPrompt";
@@ -99,7 +99,7 @@ export default function SelectDirectoryPrompt({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType={Platform.OS === "ios" ? "fade" : "slide"}
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >

@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useCallback, Fragment } from "react";
-import { View, Text, Button, Alert, Modal, FlatList, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Directory, Paths } from "expo-file-system";
 import * as DocumentPicker from "expo-document-picker";
+import { Directory, Paths } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
-import { uploadFile } from "../utils/transferApi";
-import { getFilesInDirectory, ensureAppDirectory } from "../utils/fileUtils";
+import React, { useCallback, useEffect, useState } from "react";
+import { Alert, Button, FlatList, Modal, Platform, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import type { FileSystemEntry } from "../types/ExplorerTypes";
+import { ensureAppDirectory, getFilesInDirectory } from "../utils/fileUtils";
+import { uploadFile } from "../utils/transferApi";
 import CurrentDirectoryPath from "./CurrentDirectoryPath";
 
 const APP_DIR_NAME = "Core/Files";
@@ -87,9 +87,9 @@ export default function SelectFilePrompt({
     onClose();
     setLoading(true);
     try {
-      const response = await uploadFile(file.uri, file.name);
-      if (onUploadSuccess) onUploadSuccess(response.pin);
-      Alert.alert("Success", `Your file PIN: ${response.pin}`);
+      const pin = await uploadFile(file.uri, file.name, file.typeInfo.mime, file.size);
+      if (onUploadSuccess) onUploadSuccess(pin);
+      Alert.alert("Success", `Your file PIN: ${pin}`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     } finally {
@@ -105,9 +105,9 @@ export default function SelectFilePrompt({
 
       const file = result.assets[0];
       setLoading(true);
-      const response = await uploadFile(file.uri, file.name);
-      if (onUploadSuccess) onUploadSuccess(response.pin);
-      Alert.alert("Success", `PIN copied to clipboard: ${response.pin}`);
+      const pin = await uploadFile(file.uri, file.name, file.mimeType!, file.size!);
+      if (onUploadSuccess) onUploadSuccess(pin);
+      Alert.alert("Success", `PIN copied to clipboard: ${pin}`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     } finally {
@@ -134,9 +134,9 @@ export default function SelectFilePrompt({
       } else throw new Error("Invalid media file");
 
       setLoading(true);
-      const response = await uploadFile(file.uri, fileName);
-      if (onUploadSuccess) onUploadSuccess(response.pin);
-      Alert.alert("Success", `PIN copied to clipboard: ${response.pin}`);
+      const pin = await uploadFile(file.uri, fileName, file.mimeType!, file.fileSize!);
+      if (onUploadSuccess) onUploadSuccess(pin);
+      Alert.alert("Success", `PIN copied to clipboard: ${pin}`);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     } finally {
@@ -156,7 +156,7 @@ export default function SelectFilePrompt({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType={Platform.OS === "ios" ? "fade" : "slide"}
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >

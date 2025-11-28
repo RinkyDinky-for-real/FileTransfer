@@ -1,11 +1,11 @@
+import Entypo from '@expo/vector-icons/Entypo';
+import * as Clipboard from 'expo-clipboard';
 import React, { useEffect, useState } from "react";
-import { Alert, Button, Platform, Pressable, Text, TextInput, View, TouchableWithoutFeedback, Keyboard, } from "react-native";
+import { Alert, Button, Keyboard, Platform, Pressable, Text, TextInput, TouchableWithoutFeedback, View, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SelectDirectoryPrompt from "../components/SelectDirectoryPrompt";
 import SelectFilePrompt from "../components/SelectFilePrompt";
 import { downloadFile } from "../utils/transferApi";
-import * as Clipboard from 'expo-clipboard';
-import Entypo from '@expo/vector-icons/Entypo';
 
 export default function TransferScreen() {
   const [pin, setPin] = useState<string | null>(null);
@@ -70,7 +70,6 @@ export default function TransferScreen() {
               placeholder="PIN"
               value={downloadPin}
               onChangeText={setDownloadPin}
-              keyboardType="number-pad"
               style={{
                 borderWidth: 1,
                 borderColor: "#ccc",

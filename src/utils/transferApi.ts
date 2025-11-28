@@ -1,51 +1,44 @@
-import * as FileSystem from "expo-file-system/legacy";
+import { Directory, File, Paths } from "expo-file-system";
+import { AppwriteException } from "react-native-appwrite";
+import { downloadFileFromAppwrite, InputFile, readFileFromAppwrite, uploadFileToAppwrite } from "./appwrite";
+import { getUniqueName } from "./fileUtils";
 
-const SERVER_URL = "https://terrie-prepatrician-cira.ngrok-free.dev";
 const APP_DIR_NAME = "Core/Files";
 
-export async function uploadFile(fileUri: string, fileName: string) {
-  const formData = new FormData();
-  formData.append("file", {
-    uri: fileUri,
+export async function uploadFile(fileUri: string, fileName: string, fileType: string, fileSize: number) {
+  const url = new URL(fileUri);
+
+  const file: InputFile = {
     name: fileName,
-    type: "application/octet-stream",
-  } as any);
+    type: fileType,
+    size: fileSize,
+    uri: url.href
+  }
 
-  const res = await fetch(`${SERVER_URL}/upload`, {
-    method: "POST",
-    body: formData
-  });
-
-  if (!res.ok) throw new Error("Upload failed in API");
-  return await res.json();
+  return await uploadFileToAppwrite(file)
 }
 
 export async function downloadFile(pin: string, downloadPath: string) {
-  const res = await fetch(`${SERVER_URL}/download/${pin}`);
-  if (!res.ok) throw new Error("Invalid PIN");
+  try {
+    const fileData = await readFileFromAppwrite(pin);
+    const downloadURL = await downloadFileFromAppwrite(pin); //res.arrayBuffer();
 
-  const arrayBuffer = await res.arrayBuffer();
-  const disposition = res.headers.get("Content-Disposition");
-  let filename = "unknown";
-  
-  if (disposition && disposition.includes("filename=")) {
-    filename = disposition.split("filename=")[1].replace(/['"]/g, "");
-}
-  console.log("Original filename from server:", filename);
+    let filename = fileData.name;
+    console.log("Original filename from server:", filename);
 
-  let binary = "";
-  const bytes = new Uint8Array(arrayBuffer);
-  const chunkSize = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    const chunk = bytes.subarray(i, i + chunkSize);
-    binary += String.fromCharCode.apply(null, Array.from(chunk));
+    const destinationDir = new Directory(Paths.document, APP_DIR_NAME + downloadPath);
+    console.log("Saving to", destinationDir);
+
+    filename = await getUniqueName(destinationDir, filename, true)
+    const destinationFile = new File(destinationDir, filename)
+
+    await File.downloadFileAsync(downloadURL.href, destinationFile)
+
+    return APP_DIR_NAME + downloadPath + filename;
+  } catch (error) {
+    if (error instanceof AppwriteException) {
+      throw new Error("Invalid PIN");
+    }
+    console.error("Unable to get file:", error);
   }
-  const base64 = btoa(binary);
-  const localUri = (FileSystem as any).documentDirectory + APP_DIR_NAME + downloadPath + filename;
-  console.log("Saving to", localUri);
-  await (FileSystem as any).writeAsStringAsync(localUri, base64, {
-    encoding: "base64",
-  });
-
-  return localUri;
 }
